@@ -1,4 +1,4 @@
-public class Operators {
+public class MathematicalOperators {
     public static void main(String[] args) {
         int x = 50;
         int y = 10;
