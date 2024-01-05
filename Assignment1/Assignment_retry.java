@@ -67,10 +67,14 @@ class Main {
             System.out.println("Input a positive integer value:");
             if (input.hasNextInt()) {
                 userIn = input.nextInt();
-                break;
+                if (userIn > 0) {
+                    break;
+                } else {
+                    System.out.println("not a positive number");
+                }
             } else {
                 input.nextLine();
-                System.out.println("Could not resolve integer from input.");
+                System.out.println("not a number");
                 continue;
             }
         } while (!input.hasNextInt() && userIn < 0);
