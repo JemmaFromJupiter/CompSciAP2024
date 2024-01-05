@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 // Comments on blocks are formatted with a <== ==> and regular line comments are formatted with a regular '//'
 
-class Assignment1 {
+class Main {
     public static void main(String[] args) {
         int i; // Used for generic iteration, only so I don't have to use "int i = 0" each time, and instead declare "i = 0" only
 
