@@ -141,11 +141,11 @@ class Main {
             System.out.println("Input a positive integer value:");
             if (input.hasNextInt()) {
                 userIn = input.nextInt();
-                break;
-            } else if (input.hasNextInt() && input.nextInt() < 0) {
-                input.nextLine();
-                System.out.println("not a positive number");
-                continue;
+                if (userIn > 0) {
+                    break;
+                } else {
+                    System.out.println("not a positive number");
+                }
             } else {
                 input.nextLine();
                 System.out.println("not a number");
