@@ -10,6 +10,6 @@ public class MathematicalOperators {
         int incr = ++x;
         int deincr = --y;
 
-        System.out.printf("Add: %d\nSub: %d\nMul: %d\nDiv: %f\nMod: %d\nIncr: %d\nDeincr: %d", add, sub, mul, div, mod, x, y);
+        System.out.printf("Addition: %d\nSubtraction: %d\nMultiplication: %d\nDivision: %f\nRemainder: %d\nIncrement: %d\nDeincrement: %d", add, sub, mul, div, mod, x, y);
     }
 }
