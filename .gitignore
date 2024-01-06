@@ -1,6 +1,4 @@
 ### Java ###
-# The .gitignore file itself
-.gitignore
 
 # Compiled class file
 *.class
