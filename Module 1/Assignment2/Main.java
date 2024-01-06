@@ -100,17 +100,20 @@ class Main {
     // <== Sets the difficulty of the game by getting a value between 1 and 10, then calculating the upper limit and how many turns the player has based on the difficulty ==> //
     public static int[] set_difficulty() {
         int difficulty = get_number("Choose A Difficulty Level (1-3):", 1, 10);
+        
         int upperLimit = difficulty*10;
         int turns = difficulty+2;
         int[] dif = {upperLimit, turns};
+
         return dif;
     }
 
     // <== Plays the game ==> //
     public static boolean play_game() {
-        random = new Random(); // Creates a new random number generator object ==> //
+        random = new Random(); // Creates a new random number generator object //
         clear();
         System.out.println("Welcome to the guessing game! Try to guess the number I'm thinking of to win!\n\n");
+
         // <== Sets the difficulty and generates a random number from 1 to the upper limit ==> //
         int[] difficulty = set_difficulty(); int upperLimit = difficulty[0]; int numTurns = difficulty[1];
         int number = random.nextInt(upperLimit) + 1;
@@ -120,6 +123,7 @@ class Main {
 
         // <== For loop that breaks once the user has won, or when the user uses up all of their tries. ==> //
         for (int turnsRemaining = numTurns; turnsRemaining >= 1; turnsRemaining--) {
+
             // <== Context and input ==> //
             System.out.printf("I am thinking of a number between 1 and %d.\n", upperLimit);
             System.out.printf("You have %d turns remaining.\n", turnsRemaining);
@@ -130,6 +134,7 @@ class Main {
             if (guess == number) {
                 System.out.println("You Got It!");
                 won = true;
+                
                 break;
             } else {
                 clear();
