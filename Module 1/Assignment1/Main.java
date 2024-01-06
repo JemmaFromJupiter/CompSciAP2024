@@ -106,24 +106,7 @@ class Main {
         // <== Gets two integers as input ==> //
         int1 = userInputInt("Input an integer value:", false);
         int2 = userInputInt("Input an integer value:", false);
-
-        // <== Checks if int1 is less than int2, if so, counts upwards from int1 to int2 ==> //
-        // <== If int1 is greater than int2, counts down from int1 to int2 ==> //
-        // if (int1 < int2) {
-        //     for (i = int1; i <= int2; i++) {
-        //         System.out.print(i);
-        //         if (i < int2) {
-        //             System.out.print(",");
-        //         }
-        //     }
-        // } else if (int1 > int2) {
-        //     for (i = int1; i >= int2; i--) {
-        //         System.out.print(i);
-        //         if (i > int2) {
-        //             System.out.print(",");
-        //         }
-        //     }
-        // }
+        
         if (int1 != int2) {
             int incr = (int) Math.signum(int2 - int1);
 
