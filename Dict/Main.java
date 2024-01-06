@@ -3,6 +3,12 @@ import java.util.Map;
 import java.util.Arrays;
 
 class Dict<T> extends HashMap<String, T> {
+    /**
+     * A simple implementation of a Dict class that stores a hashmap that can be used to store items with keys.
+     * Dicts must be declared with strict typing. Ex: Dict<String> can only have String Type values.
+     * Dictionaries have to be declared as such: `Dict<String> myDict = new Dict<>(new Object[][]{{key, value}})`
+     * @param dictVals An Array representation of the dictionary Objects. {{key1, value1}, {key2, value2}}
+     */
 
     Dict(Object[][] dictVals) {
         super(validate_and_initialise(dictVals));
@@ -41,6 +47,20 @@ class Dict<T> extends HashMap<String, T> {
         return new HashMap<>(initialMap);
     }
 
+    T get(String key) {
+        return super.get(key);
+    }
+
+    T get(String key, T default_value) {
+        T value = super.get(key);
+        return value != null ? value : default_value;
+    }
+
+    @Override
+    public T put(String key, T value) {
+        return super.put(key, value);
+    }
+
     @Override
     public String toString() {
         StringBuilder dictString = new StringBuilder("{");
@@ -68,13 +88,14 @@ class Dict<T> extends HashMap<String, T> {
 
 public class Main {
     public static void main(String[] args) {
-        Dict<String> fst = new Dict<>(new Object[][]{{"1", "First"}, {"2", "Second"}, {"3", "Third"}});
-        Dict<String> itemPrices = new Dict<>(new Object[][]{
+        Dict<Float> itemPrices = new Dict<>(new Object[][]{
             {"Bag of Apples", 10.97f},
             {"Bag of Oranges", 9.99f},
             {"Bunch of Bananas", 9.76f}
         });
 
-        System.out.println(fst);
+        System.out.println(itemPrices);
+        itemPrices.put("Frozen Pizza", 19.99f);
+        System.out.println(itemPrices);
     }
 }
