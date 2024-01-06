@@ -135,7 +135,7 @@ class Main {
         do {
             System.out.println("Enter your date of birth in the form \"mm/dd/yyyy\":");
             DoB = input.nextLine();
-        } while (!DoBCheck(DoB));
+        } while (!dateRegex.matcher(DoB).matches());
 
         String[] DoBArray = DoB.split("/"); // Splits the DoB into a String Array
 
@@ -173,10 +173,6 @@ class Main {
 
 
         input.close(); //scanners should be closed right before the program ends, if you close it earlier and try to reopen it, you will run into problems as input streams cannot be reopened once closed. 
-    }
-
-    public static boolean DoBCheck(String input) {
-        return dateRegex.matcher(input).matches();
     }
 
     public static int userInputInt(String message, boolean positive) {
