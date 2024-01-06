@@ -109,21 +109,34 @@ class Main {
 
         // <== Checks if int1 is less than int2, if so, counts upwards from int1 to int2 ==> //
         // <== If int1 is greater than int2, counts down from int1 to int2 ==> //
-        if (int1 < int2) {
-            for (i = int1; i <= int2; i++) {
+        // if (int1 < int2) {
+        //     for (i = int1; i <= int2; i++) {
+        //         System.out.print(i);
+        //         if (i < int2) {
+        //             System.out.print(",");
+        //         }
+        //     }
+        // } else if (int1 > int2) {
+        //     for (i = int1; i >= int2; i--) {
+        //         System.out.print(i);
+        //         if (i > int2) {
+        //             System.out.print(",");
+        //         }
+        //     }
+        // }
+        if (int1 != int2) {
+            int incr = (int) Math.signum(int2 - int1);
+
+            for (i = int1; i != int2+incr; i += incr) {
                 System.out.print(i);
-                if (i < int2) {
-                    System.out.print(",");
-                }
-            }
-        } else if (int1 > int2) {
-            for (i = int1; i >= int2; i--) {
-                System.out.print(i);
-                if (i > int2) {
+
+                if (i != int2) {
                     System.out.print(",");
                 }
             }
         }
+
+        System.out.println();
 
         //8) Ask the user for their birth day in the form "mm/dd/yyyy" then print out the month, day and year the user was born on seperate lines. Ex: if the user enters "01/23/4567", print "Month: 01", "Day: 23", "Year: 4567".
         System.out.println("\n\nExample 8:");
