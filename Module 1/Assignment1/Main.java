@@ -6,11 +6,13 @@ import java.util.regex.Pattern;
 // Comments on blocks are formatted with a <== ==> and regular line comments are formatted with a regular '//'
 
 class Main {
+    public static Scanner input;
+    
     public static void main(String[] args) {
+        input = new Scanner(System.in);
         int i; // Used for generic iteration, only so I don't have to use "int i = 0" each time, and instead declare "i = 0" only
 
         //Rather than having a simple input function, Java uses the scanner object to read input from various sources. This declares a new scanner object that will read inputs from the console (System.in). See https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html for offical documentation on the scanner class.
-        Scanner input = new Scanner(System.in);
 
         //To create random numbers, you first need to create a new Random object. Afterwards you can use the object to generate random numbers using it's methods. See https://docs.oracle.com/javase/8/docs/api/java/util/Random.html for offical documentation on the random class. 
         Random random = new Random();
@@ -33,14 +35,14 @@ class Main {
         System.out.println("\n\nExample 3:");
         int userIn;
 
-        userIn = userInputInt("Input an integer value:", input, false);
+        userIn = userInputInt("Input an integer value:", false);
 
         if (userIn < 0) {
-            System.out.println("Your number is less than 0.");
+            System.out.println("less than");
         } else if (userIn == 0) {
-            System.out.println("Your number is 0.");
+            System.out.println("equal to");
         } else {
-            System.out.println("Your input is greater than 0.");
+            System.out.println("greater than");
         }
 
         //4) Prompt the user for a positive number, then use a loop to print all the numbers between 0 and up to but not including that number to the console. Afterwards print out the sum of the numbers printed.
@@ -49,7 +51,7 @@ class Main {
 
         // <== "do ... while" loop to ensure user input is positive ==> //
 
-        userIn = userInputInt("Input a positive integer:", input, true);
+        userIn = userInputInt("Input a positive integer:", true);
 
         int numSum = 0;
 
@@ -59,7 +61,7 @@ class Main {
             System.out.println(i);
         }
 
-        System.out.printf("Sum: %d\n", numSum);
+        System.out.println(numSum);
 
 
         //5) Using a loop, print out 10 randomly generated numbers between 1 and 100 (inclusive). Afterwards, print out what the smallest, the largest and the average value of the random num ers were.
@@ -111,7 +113,7 @@ class Main {
         // <== Same code from example 4 ==> //
         System.out.println("\n\nExample 6:");
 
-        userIn = userInputInt("Input a positive integer value:", input, true);
+        userIn = userInputInt("Input a positive integer value:", true);
 
 
         //7) Ask the user to enter 2 integers. Create a loop that will count from the first number to the second number and print the results to the console on a single line, seperate by commas. For example, if given the numbers 2 and 5, you should print the string "2,3,4,5". Note that if the first number is larger than the second, you must count backwards!
@@ -120,8 +122,8 @@ class Main {
         int int2 = -1;
 
         System.out.println("Enter two integers:");
-        int1 = userInputInt("Input an integer value:", input, false);
-        int2 = userInputInt("Input an integer value:", input, false);
+        int1 = userInputInt("Input an integer value:", false);
+        int2 = userInputInt("Input an integer value:", false);
 
         if (int1 < int2) {
             for (i = int1; i <= int2; i++) {
@@ -144,13 +146,13 @@ class Main {
         String DoB;
 
         do {
-            System.out.println("Enter your date of birth in the form \"dd/mm/yyyy\":");
+            System.out.println("Enter your date of birth in the form \"mm/dd/yyyy\":");
             DoB = input.nextLine();
         } while (!checkDOBPattern(DoB));
 
         String[] DoBArray = DoB.split("/");
 
-        System.out.printf("Day: %s\nMonth: %s\nYear: %s\n", DoBArray[0], DoBArray[1], DoBArray[2]);
+        System.out.printf("Month: %s\nDay: %s\nYear: %s\n", DoBArray[0], DoBArray[1], DoBArray[2]);
 
 
         //9) Make a loop that will count from 1 to 30 and print them to the console. However, if the number is a multiple of 3, print "fizz" instead; and if it's a multiple of 5, print "buzz" instead. If it's a multiple of both, print "fizzbuzz" instead of the number.
@@ -176,35 +178,31 @@ class Main {
     // <== Compiles a regex pattern used to compare to a string input, used to make sure user has correct input formatting. Returns true or false. ==> //
     // <== For context, the regex format string is this "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(\\d{4})$" ==> //
     // <== I found this regex format string online, so the format string isnt mine. The rest of the format checking is just the basic usage of the regex.Pattern module in java utils. ==> // 
-        Pattern regex = Pattern.compile("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(\\d{4})$");
+        Pattern regex = Pattern.compile("^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(\\d{4})$");
 
         // <== Returns a true or false value depending on if the inputs format matches the regex format ==> //
         return regex.matcher(input).matches();
     }
 
-    public static boolean canConvertToInt(String s) {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
+    public static int userInputInt(String message, boolean positive) {
+        int inputInt = -1;
+        do {
+            System.out.println(message);
+            if (input.hasNextInt()) {
+                inputInt = input.nextInt();
+                if (inputInt >= 0 || !positive) {
+                    input.nextLine();
+                    break;
+                } else {
+                    System.out.println("not a positive number");
+                }
+            } else {
+                input.nextLine();
+                System.out.println("not a number");
+                continue;
+            }
+        } while (true);
 
-    public static int userInputInt(String message, Scanner inputDevice, boolean positive) {
-        String userIn = "";
-        if (positive) {
-            do {
-                System.out.println(message);
-                userIn = inputDevice.nextLine().trim();
-            } while (!canConvertToInt(userIn) || Integer.parseInt(userIn) < 0);
-        } else {
-            do {
-                System.out.println(message);
-                userIn = inputDevice.nextLine().trim();
-            } while (!canConvertToInt(userIn));
-        }
-
-        return Integer.parseInt(userIn);
+        return inputInt;
     }
 }
