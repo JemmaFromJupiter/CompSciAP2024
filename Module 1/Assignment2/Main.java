@@ -3,22 +3,28 @@ import java.util.Scanner;
 import java.lang.Math;
 
 class Main {
-    public static void main(String[] args) {
+    public static Scanner input;
 
+    // <== The main function that runs first on runtime ==>
+    public static void main(String[] args) {
+        input = new Scanner(System.in);
+        // <== Runs the game until "play_game()" returns false ==>
         while (play_game()) {
             ;
         }
 
+        // <== Clears the console and says goodbye to the user ==> //
         clear();
+        input.close();
         System.out.println("Goodbye!");
     }
 
+    // <== Clears the console ==> //
     public static void clear() {
-    System.out.print("\033\143");
+        System.out.print("\033\143");
     }
 
     public static int get_number(String message, int min, int max) {
-        Scanner input = new Scanner(System.in);
         int playerNumber = 0;
         
         do {
@@ -33,7 +39,6 @@ class Main {
                     return playerNumber;
                 }
             } else {
-                input.nextLine();
                 System.out.println("Error: Input needs to be a number.");
                 continue;
             }
@@ -67,9 +72,18 @@ class Main {
     }
 
     public static int set_feedback() {
-        int feedback = get_number("What Kind Of Feedback Would You Like To Help?\n\n1) Higher/Lower\n2) Hot/Cold\n3) None\n", 1, 3);
-        
-        return feedback;
+        return get_number("What Kind Of Feedback Would You Like To Help?\n\n1) Higher/Lower\n2) Hot/Cold\n3) None\n", 1, 3);
+    }
+
+    public static String feedback(int feedbackType, int guess, int number) {
+        switch (feedbackType) {
+            case 1:
+                return higher_lower(guess, number);
+            case 2:
+                return hot_cold(guess, number);
+            default:
+                return no_feedback(guess, number);
+        }
     }
 
     public static int[] set_difficulty() {
@@ -86,7 +100,7 @@ class Main {
         System.out.println("Welcome to the guessing game! Try to guess the number I'm thinking of to win!\n\n");
         int[] difficulty = set_difficulty(); int upperLimit = difficulty[0]; int numTurns = difficulty[1];
         int number = random.nextInt(upperLimit) + 1;
-        int feedback = set_feedback();
+        int feedbackType = set_feedback();
         boolean won = false;
         clear();
 
@@ -102,17 +116,7 @@ class Main {
                 break;
             } else {
                 clear();
-                switch (feedback) {
-                    case 1:
-                        System.out.println(higher_lower(guess, number));
-                        break;
-                    case 2:
-                        System.out.println(hot_cold(guess, number));
-                        break;
-                    default:
-                        System.out.println(no_feedback(guess, number));
-                        break;
-                }
+                System.out.println(feedback(feedbackType, guess, number));
             }
         }
 
