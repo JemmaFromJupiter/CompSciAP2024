@@ -24,9 +24,11 @@ class Main {
         System.out.print("\033\143");
     }
 
+    // <== User Input Verification ==> //
     public static int get_number(String message, int min, int max) {
         int playerNumber = 0;
         
+        // <== Prompts user for number until correct input is selected ==> //
         do {
             System.out.println(message);
             if (input.hasNextInt()) {
@@ -36,9 +38,11 @@ class Main {
                 } else if (playerNumber > max) {
                     System.out.printf("Error: Input must be at most %d\n", max);
                 } else {
+                    input.nextLine();
                     return playerNumber;
                 }
             } else {
+                input.nextLine();
                 System.out.println("Error: Input needs to be a number.");
                 continue;
             }
