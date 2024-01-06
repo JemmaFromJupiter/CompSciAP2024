@@ -135,7 +135,7 @@ class Main {
         do {
             System.out.println("Enter your date of birth in the form \"mm/dd/yyyy\":");
             DoB = input.nextLine();
-        } while (dateRegex.matcher(DoB).matches());
+        } while (!DoBCheck(DoB));
 
         String[] DoBArray = DoB.split("/"); // Splits the DoB into a String Array
 
@@ -167,7 +167,6 @@ class Main {
             if (result.length() == 0) {
                 result.append(i);
             }
-
             System.out.println(result);
         }
 
@@ -176,32 +175,33 @@ class Main {
         input.close(); //scanners should be closed right before the program ends, if you close it earlier and try to reopen it, you will run into problems as input streams cannot be reopened once closed. 
     }
 
+    public static boolean DoBCheck(String input) {
+        return dateRegex.matcher(input).matches();
+    }
+
     public static int userInputInt(String message, boolean positive) {
         int inputInt = -1;
 
         // <== Checks to make sure the user enters either a number or a positive number depending on the true/false value of the "positive" argument ==> //
         do {
-
             System.out.println(message);
-
             if (input.hasNextInt()) {
-
                 inputInt = input.nextInt();
 
                 if (inputInt >= 0 || !positive) {
                     input.nextLine();
-                    
+
                     return inputInt;
                 } else {
                     System.out.println("not a positive number");
                 }
-
+                
             } else {
                 input.nextLine();
                 System.out.println("not a number");
                 continue;
             }
-
         } while (true);
+
     }
 }
