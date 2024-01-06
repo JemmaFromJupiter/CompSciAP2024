@@ -5,6 +5,9 @@
 # Log file
 *.log
 
+# Tests Folder
+Tests
+
 # Batch file
 *.bat
 
