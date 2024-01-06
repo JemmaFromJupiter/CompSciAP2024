@@ -35,17 +35,17 @@ class Main {
             System.out.println(message);
             if (input.hasNextInt()) {
                 playerNumber = input.nextInt();
-                if (playerNumber < min) {
-                    System.out.printf("Error: Input must be at least %d\n", min);
-                } else if (playerNumber > max) {
-                    System.out.printf("Error: Input must be at most %d\n", max);
-                } else {
+                if (min < playerNumber && playerNumber < max) {
                     input.nextLine();
+
                     return playerNumber;
+                } else {
+                    System.out.printf("Error: Input must be in range %d - %d\n", min, max);
                 }
             } else {
                 input.nextLine();
                 System.out.println("Error: Input needs to be a number.");
+
                 continue;
             }
         } while (true);
@@ -99,7 +99,7 @@ class Main {
 
     // <== Sets the difficulty of the game by getting a value between 1 and 10, then calculating the upper limit and how many turns the player has based on the difficulty ==> //
     public static int[] set_difficulty() {
-        int difficulty = get_number("Choose A Difficulty Level (1-3):", 1, 10);
+        int difficulty = get_number("Choose A Difficulty Level (1-3):", 1, 3);
         
         int upperLimit = difficulty*10;
         int turns = difficulty+2;
