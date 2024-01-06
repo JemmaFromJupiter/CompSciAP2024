@@ -65,8 +65,8 @@ class Main {
 
         // <== Declares variables for assignment, all with a default value of 0 ==> // 
         int biggest = 0;
-        int smallest = 0;
-        float average = 0;
+        int smallest = 100;
+        int sum = 0;
 
         // <== For loop that generates 10 pseudorandom numbers from 1-100 ==> //
         for (i = 0; i < 10; i++) {
@@ -77,18 +77,14 @@ class Main {
             // <== "if ... else if ... else" block to sort out the biggest and smallest numbers ==> //
             // <== Uses Math.max and Math.min to set the bigger and smaller values accordingly ==> //
             // <== PseudoRandom number is always added to the average ==> //
-            if (i == 0) {
-                biggest = smallest = pseudoRand;
-                average += pseudoRand;
-            }
             biggest = Math.max(biggest, pseudoRand);
             smallest = Math.min(smallest, pseudoRand);
-            average += pseudoRand;
+            sum += pseudoRand;
 
             System.out.println(pseudoRand); // prints the pseudorandom integer.
         }
 
-        average = average / i; // Divides the sum of all the psuedorandom numbers by the number of iterations to get the overall average.
+         float average = sum / i; // Divides the sum of all the psuedorandom numbers by the number of iterations to get the overall average.
 
         // <== Print Full Results ==> //
         System.out.printf("Biggest Number: %d\n", biggest);
