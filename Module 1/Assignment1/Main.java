@@ -1,5 +1,7 @@
 import java.util.Scanner; //This is used to get input from the console
 import java.util.Random; //This is used to generate random numbers
+import java.util.Map;
+import java.util.HashMap;
 //import any additional libraries you need here
 import java.util.regex.Pattern;
 
@@ -8,11 +10,15 @@ import java.util.regex.Pattern;
 class Main {
     public static Scanner input;
     public static Random random;
+    // <== For context, the regex format string is this "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(\\d{4})$" ==> //
+    // <== I found this regex format string online, so the format string isnt mine. The rest of the format checking is just the basic usage of the regex.Pattern module in java utils. ==> // 
+    public static Pattern dateRegex;
     
     public static void main(String[] args) {
         int i; // Used for generic iteration, only so I don't have to use "int i = 0" each time, and instead declare "i = 0" only
         input = new Scanner(System.in);
         random = new Random(); 
+        dateRegex = Pattern.compile("^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(\\d{4})$");
 
         //1) Create a variable and assign it the string "Hello World". Afterwards print that variable to the console.
         System.out.println("\n\nExample 1:");
@@ -129,7 +135,7 @@ class Main {
         do {
             System.out.println("Enter your date of birth in the form \"mm/dd/yyyy\":");
             DoB = input.nextLine();
-        } while (!checkDOBPattern(DoB));
+        } while (dateRegex.matcher(DoB).matches());
 
         String[] DoBArray = DoB.split("/"); // Splits the DoB into a String Array
 
@@ -140,16 +146,29 @@ class Main {
         System.out.println("\n\nExample 9:");
 
         // <== Loops 30 times and replaces every number that is a multiple of 3&5 with fizzbuzz, every number that is a multiple of 3 with fizz and every number that is a multiple of 5 with buzz ==> //
+        // <== Creates a hashmap with an int key, string value combo, this is used for assigning results based on a key and allows for more dynamic code ==> //
+        Map<Integer, String> conditions = new HashMap<Integer, String>();
+        conditions.put(3, "fizz");
+        conditions.put(5, "buzz");
+
+        // <== The StringBuilder creates a mutable character sequence ==> //
         for (i = 1; i <= 30; i++) {
-            if (i % 3 == 0 && i % 5 == 0) {
-                System.out.println("fizzbuzz");
-            } else if (i % 3 == 0) {
-                System.out.println("fizz");
-            } else if (i % 5 == 0) {
-                System.out.println("buzz");
-            } else {
-                System.out.println(i);
+            StringBuilder result = new StringBuilder();
+
+            // <== A for-each loop looking through all the keys in the conditions hashmap and checking if the remainder of i and the key is 0 ==> //
+            // <== Appends fizz, buzz or fizz and buzz to the result depending on the value of i ==> //
+            for (int key : conditions.keySet()) {
+                if (i % key == 0) {
+                    result.append(conditions.get(key));
+                }
             }
+            
+            // <== if the result string doesnt have anything appended to it, it just appends the current value of i ==> //
+            if (result.length() == 0) {
+                result.append(i);
+            }
+
+            System.out.println(result);
         }
 
 
@@ -157,37 +176,32 @@ class Main {
         input.close(); //scanners should be closed right before the program ends, if you close it earlier and try to reopen it, you will run into problems as input streams cannot be reopened once closed. 
     }
 
-    // <== Compiles a regex pattern used to compare to a string input, used to make sure user has correct input formatting. Returns true or false. ==> //
-    private static boolean checkDOBPattern(String input) {
-        // <== For context, the regex format string is this "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(\\d{4})$" ==> //
-        // <== I found this regex format string online, so the format string isnt mine. The rest of the format checking is just the basic usage of the regex.Pattern module in java utils. ==> // 
-        Pattern regex = Pattern.compile("^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/(\\d{4})$");
-
-        // <== Returns a true or false value depending on if the inputs format matches the regex format ==> //
-        return regex.matcher(input).matches();
-    }
-
     public static int userInputInt(String message, boolean positive) {
         int inputInt = -1;
 
         // <== Checks to make sure the user enters either a number or a positive number depending on the true/false value of the "positive" argument ==> //
         do {
+
             System.out.println(message);
+
             if (input.hasNextInt()) {
+
                 inputInt = input.nextInt();
+
                 if (inputInt >= 0 || !positive) {
                     input.nextLine();
-                    break;
+                    
+                    return inputInt;
                 } else {
                     System.out.println("not a positive number");
                 }
+
             } else {
                 input.nextLine();
                 System.out.println("not a number");
                 continue;
             }
-        } while (true);
 
-        return inputInt;
+        } while (true);
     }
 }
