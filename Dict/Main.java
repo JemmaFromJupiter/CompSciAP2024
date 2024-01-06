@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 class Dict<T> extends HashMap<String, T> {
 
-    public Dict(Object[][] dictVals) {
+    Dict(Object[][] dictVals) {
         super(validate_and_initialise(dictVals));
     }
 
@@ -29,7 +29,7 @@ class Dict<T> extends HashMap<String, T> {
         return map;
     }
 
-    public Dict(Map<String, T> initialMap) {
+    Dict(Map<String, T> initialMap) {
         super(validate_and_initialise(initialMap));
     }
 
@@ -68,6 +68,13 @@ class Dict<T> extends HashMap<String, T> {
 
 public class Main {
     public static void main(String[] args) {
-        
+        Dict<String> fst = new Dict<>(new Object[][]{{"1", "First"}, {"2", "Second"}, {"3", "Third"}});
+        Dict<String> itemPrices = new Dict<>(new Object[][]{
+            {"Bag of Apples", 10.97f},
+            {"Bag of Oranges", 9.99f},
+            {"Bunch of Bananas", 9.76f}
+        });
+
+        System.out.println(fst);
     }
 }
