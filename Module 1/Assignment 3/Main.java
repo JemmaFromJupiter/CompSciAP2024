@@ -77,7 +77,6 @@ public class Main {
                 } else if (no.contains(userInput)) {
                     return false;
                 } else {
-
                     System.out.println("Input must be Y or N.");
                 }
             } else {
