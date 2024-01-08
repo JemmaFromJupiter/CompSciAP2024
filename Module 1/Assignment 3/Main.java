@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static Scanner input;
@@ -63,13 +65,16 @@ public class Main {
     public static boolean confirm(String message) {
         String userInput = "";
 
+        List<String> yes = Arrays.asList("Yes", "yes", "Y", "y");
+        List<String> no = Arrays.asList("No", "no", "N", "n");
+
         do {
             System.out.println(message);
             if (input.hasNext()) {
                 userInput = input.nextLine();
-                if (userInput.equals("Y")) {
+                if (yes.contains(userInput)) {
                     return true;
-                } else if (userInput.equals("N")) {
+                } else if (no.contains(userInput)) {
                     return false;
                 } else {
 
