@@ -7,8 +7,8 @@ public class Main {
     public static void main(String[] args) {
         input = new Scanner(System.in);
         
-        int userInt = get_number("Input an integer: ", 1, 3);
-        float userFloat = get_number("Input a float:", 1.0f, 3.0f);
+        int userInt = get_number("Input an integer between 1 and 3: ", 1, 3);
+        float userFloat = get_number("Input a float between 1.0 and 3.0", 1.0f, 3.0f);
         boolean userBool = confirm("Confirm?");
 
         System.out.printf("The Input Integer: %d\n", userInt);
