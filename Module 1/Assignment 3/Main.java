@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Main {
     public static Scanner input;
+    private static List<String> yes = Arrays.asList("Yes", "yes", "Y", "y");
+    private static List<String> no = Arrays.asList("No", "no", "N", "n");
     public static void main(String[] args) {
         input = new Scanner(System.in);
         
@@ -64,9 +66,6 @@ public class Main {
 
     public static boolean confirm(String message) {
         String userInput = "";
-
-        List<String> yes = Arrays.asList("Yes", "yes", "Y", "y");
-        List<String> no = Arrays.asList("No", "no", "N", "n");
 
         do {
             System.out.println(message);
