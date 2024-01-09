@@ -17,8 +17,8 @@ public class Main {
         System.out.printf("The Input Integer: %d\n", userInt);
         System.out.printf("The Input Float: %f\n", userFloat);
         System.out.printf("The Input Confirmation: %b\n", userBool);
-        System.out.printf("Random Array 1: %s\n", Arrays.toString(random_array(20, 0, 57)));
-        System.out.printf("Random Array 1: %s\n", Arrays.toString(random_array(20)));
+        System.out.printf("Random Array 1: %s\n", Arrays.toString(random_array(20, 0, 1000)));
+        System.out.printf("Random Array 2: %s\n", Arrays.toString(random_array(20)));
     }
 
     public static int get_number(String message, int min, int max) {
