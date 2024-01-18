@@ -164,6 +164,7 @@ public class Main {
         System.out.println(dll);
         dll.insert(2, 92);
         System.out.println(dll);
+        System.out.println(dll.getLength());
         dll.delete(3);
         System.out.println(dll);
         System.out.println(dll.getLength());
