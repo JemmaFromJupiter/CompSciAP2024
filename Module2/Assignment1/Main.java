@@ -1,25 +1,23 @@
+import java.util.Random;
 
 public class Main {
+    private static Random random = new Random();
     public static void main(String[] args) {
-        DoublyLinkedList dll = new DoublyLinkedList();
-        dll.append(20);
+        int[] randomIntArray = new int[20];
+        for (int i = 0; i < randomIntArray.length; i++) {
+            randomIntArray[i] = random.nextInt(100);
+        }
+        DoublyLinkedList dll = new DoublyLinkedList(randomIntArray);
         System.out.println(dll);
-        dll.append(21);
-        System.out.println(dll);
-        dll.insert(19);
-        System.out.println(dll);
-        dll.append(26);
-        System.out.println(dll);
-        dll.insert(2, 92);
-        System.out.println(dll);
-        dll.delete(3);
+        System.out.println(dll.get(19));
+        dll.swap(2, 14);
         System.out.println(dll);
     }
 }
 
 class DoublyLinkedList {
-    public Node head;
-    public Node tail;
+    private Node head;
+    private Node tail;
     private int length;
 
     DoublyLinkedList() {
@@ -139,6 +137,8 @@ class DoublyLinkedList {
         last.prev = this.tail;
         this.tail.next = last;
         this.tail = l.tail;
+
+        length += l.getLength();
     }
 
     public void delete(int index) {
@@ -188,11 +188,22 @@ class DoublyLinkedList {
     }
 
     public void swap(int idx1, int idx2) {
-        int dat1 = this.get(idx1);
-        int dat2 = this.get(idx2);
+        Node node1 = this.getNode(idx1);
+        Node node2 = this.getNode(idx2);
+        Node tempPrev = node1.prev;
+        Node tempNext = node1.next;
 
-        this.set(idx1, dat2);
-        this.set(idx2, dat1);
+        node1.prev = node2.prev;
+        node1.next = node2.next;
+
+        node2.prev = tempPrev;
+        node2.next = tempNext;
+
+        node2.prev.next = node2;
+        node2.next.prev = node2;
+
+        node1.prev.next = node1;
+        node1.next.prev = node1;
     }
 
     public String toString() {
