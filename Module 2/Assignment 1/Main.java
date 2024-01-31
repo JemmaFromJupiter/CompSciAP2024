@@ -12,9 +12,17 @@ class DoublyLinkedList {
     }
 
     DoublyLinkedList(int head) {
-        this.head = new Node(head);
-        this.tail = null;
+        Node newNode = new Node(head);
+        this.head = newNode;
+        this.tail = newNode;
         this.length = 1;
+    }
+
+    DoublyLinkedList(int[] a) {
+        this();
+        for (int n : a) {
+            this.append(n);
+        }
     }
 
     class Node {
@@ -44,6 +52,15 @@ class DoublyLinkedList {
         return currentNode;
     }
 
+    public int get(int idx) {
+        return this.getNode(idx).data;
+    }
+
+    public void set(int idx, int data) {
+        Node node = this.getNode(idx);
+        node.data = data;
+    }
+
     public void insert(int newData) {
         Node newNode = new Node(newData);
 
@@ -64,7 +81,7 @@ class DoublyLinkedList {
     public void insert(int index, int newData) {
 
         Node newNode = new Node(newData);
-        Node prevNode = getNode(index-1);
+        Node prevNode = this.getNode(index-1);
         Node nextNode = prevNode.next;
 
         if (head == null) {
@@ -100,6 +117,13 @@ class DoublyLinkedList {
 
     }
 
+    public void append(DoublyLinkedList l) {
+        Node last = l.head;
+        last.prev = this.tail;
+        this.tail.next = last;
+        this.tail = l.tail;
+    }
+
     public void delete(int index) {
         if (index == 0) {
             head = head.next;
@@ -114,16 +138,44 @@ class DoublyLinkedList {
             length -= 1;
             return;
         } else {
-            Node prev = getNode(index - 1);
-            Node next = getNode(index + 1);
+            Node node = this.getNode(index);
 
-            next.prev = prev;
-            prev.next = next;
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
 
             length -= 1;
             return;
             
         }
+    }
+
+    public int pop(int idx) {
+        int nodeValue = this.getNode(idx).data;
+        this.delete(idx);
+        return  nodeValue;
+    }
+
+    public int pop() {
+        return this.pop(length-1);
+    }
+
+    public int find(int val) {
+        int idx;
+
+        for (idx = 0; idx < length; idx++) {
+            if (this.getNode(idx).data == val) {
+                return idx;
+            }
+        }
+        return -1;
+    }
+
+    public void swap(int idx1, int idx2) {
+        int dat1 = this.get(idx1);
+        int dat2 = this.get(idx2);
+
+        this.set(idx1, dat2);
+        this.set(idx2, dat1);
     }
 
     public String toString() {
@@ -164,9 +216,7 @@ public class Main {
         System.out.println(dll);
         dll.insert(2, 92);
         System.out.println(dll);
-        System.out.println(dll.getLength());
         dll.delete(3);
         System.out.println(dll);
-        System.out.println(dll.getLength());
     }
 }
