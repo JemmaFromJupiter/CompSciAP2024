@@ -1,4 +1,4 @@
-package Module2;
+package LinkedLists;
 
 public class DoublyLinkedList {
     public Node head;

@@ -1,4 +1,6 @@
-import DoublyLinkedList.DoublyLinkedList;
+package Module2.Assignment1;
+
+import LinkedLists.DoublyLinkedList;
 
 public class Main {
     public static void main(String[] args) {
