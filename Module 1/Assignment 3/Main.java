@@ -40,8 +40,6 @@ public class Main {
             } else {
                 input.nextLine();
                 System.out.println("Input Must Be An Integer.");
-
-                continue;
             }
         } while (true);
     }
@@ -63,8 +61,6 @@ public class Main {
             } else {
                 input.nextLine();
                 System.out.println("Input Must Be A Float.");
-
-                continue;
             }
         } while (true);
     }
@@ -85,9 +81,7 @@ public class Main {
                 }
             } else {
                 input.nextLine();
-
                 System.out.println("Input must not be empty.");
-                continue;
             }
         } while (true);
     }
