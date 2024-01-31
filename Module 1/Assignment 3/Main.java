@@ -13,12 +13,14 @@ public class Main {
         int userInt = get_number("Input an integer between 1 and 3: ", 1, 3);
         float userFloat = get_number("Input a float between 1.0 and 3.0", 1.0f, 3.0f);
         boolean userBool = confirm("Confirm?");
+        int optSel = menuSelect(new String[]{"Start", "Gallery", "Options", "Exit"});
 
         System.out.printf("The Input Integer: %d\n", userInt);
         System.out.printf("The Input Float: %f\n", userFloat);
         System.out.printf("The Input Confirmation: %b\n", userBool);
         System.out.printf("Random Array 1: %s\n", Arrays.toString(random_array(20, 0, 1000)));
         System.out.printf("Random Array 2: %s\n", Arrays.toString(random_array(20)));
+        System.out.printf("Menu Option Selected: %d\n", optSel);
     }
 
     public static int get_number(String message, int min, int max) {
@@ -85,6 +87,7 @@ public class Main {
                 input.nextLine();
 
                 System.out.println("Input must not be empty.");
+                continue;
             }
         } while (true);
     }
@@ -100,5 +103,20 @@ public class Main {
 
     public static int[] random_array(int size) {
         return random_array(size, 0, 100);
+    }
+
+    public static int menuSelect(String[] opts) {
+        int len = opts.length;
+        StringBuilder str = new StringBuilder();
+        str.append("Select Option:\n");
+        String menu;
+
+        for (int i = 0; i < len; i++) {
+            str.append(String.format("[%d] %s\n", i, opts[i]));
+        }
+
+        menu = str.toString();
+
+        return get_number(menu, 0, len);
     }
 }
