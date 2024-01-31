@@ -1,24 +1,40 @@
-import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        DoublyLinkedList dll = new DoublyLinkedList();
+        dll.append(20);
+        System.out.println(dll);
+        dll.append(21);
+        System.out.println(dll);
+        dll.insert(19);
+        System.out.println(dll);
+        dll.append(26);
+        System.out.println(dll);
+        dll.insert(2, 92);
+        System.out.println(dll);
+        dll.delete(3);
+        System.out.println(dll);
+    }
+}
 
 class DoublyLinkedList {
     public Node head;
     public Node tail;
     private int length;
 
-    DoublyLinkedList() {
+    public DoublyLinkedList() {
         this.head = null;
         this.tail = null;
         this.length = 0;
     }
 
-    DoublyLinkedList(int head) {
+    public DoublyLinkedList(int head) {
         Node newNode = new Node(head);
         this.head = newNode;
         this.tail = newNode;
         this.length = 1;
     }
 
-    DoublyLinkedList(int[] a) {
+    public DoublyLinkedList(int[] a) {
         this();
         for (int n : a) {
             this.append(n);
@@ -200,23 +216,5 @@ class DoublyLinkedList {
 
     public int getLength() {
         return length;
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        DoublyLinkedList dll = new DoublyLinkedList();
-        dll.append(20);
-        System.out.println(dll);
-        dll.append(21);
-        System.out.println(dll);
-        dll.insert(19);
-        System.out.println(dll);
-        dll.append(26);
-        System.out.println(dll);
-        dll.insert(2, 92);
-        System.out.println(dll);
-        dll.delete(3);
-        System.out.println(dll);
     }
 }
