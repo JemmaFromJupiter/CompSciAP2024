@@ -9,7 +9,7 @@ public class Main {
         }
         DoublyLinkedList dll = new DoublyLinkedList(randomIntArray);
         System.out.println(dll);
-        System.out.println(dll.get(19));
+        System.out.println(dll.get(10));
         dll.swap(2, 14);
         System.out.println(dll);
     }
@@ -208,13 +208,6 @@ class DoublyLinkedList {
 
         node1.prev.next = node1;
         node1.next.prev = node1;
-    }
-
-    public void swapByObject(int obj1, int obj2) {
-        int idx1 = this.find(obj1);
-        int idx2 = this.find(obj2);
-
-        swap(idx1, idx2);
     }
 
     public String toString() {
