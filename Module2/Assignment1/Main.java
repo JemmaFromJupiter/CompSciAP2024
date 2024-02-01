@@ -206,6 +206,13 @@ class DoublyLinkedList {
         node1.next.prev = node1;
     }
 
+    public void swapByObject(int obj1, int obj2) {
+        int idx1 = this.find(obj1);
+        int idx2 = this.find(obj2);
+
+        swap(idx1, idx2);
+    }
+
     public String toString() {
         StringBuilder returnString = new StringBuilder();
         Node last = head;
