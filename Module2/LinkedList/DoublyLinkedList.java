@@ -124,6 +124,8 @@ public class DoublyLinkedList {
         this.tail = l.tail;
 
         length += l.getLength();
+
+        return;
     }
 
     public void delete(int index) {
@@ -133,22 +135,24 @@ public class DoublyLinkedList {
 
             length -= 1;
             return;
-        } else if (index == length-1) {
+        } 
+
+        if (index == length-1) {
             tail = tail.prev;
             tail.next = null;
 
             length -= 1;
             return;
-        } else {
-            Node node = this.getNode(index);
-
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
-
-            length -= 1;
-            return;
-            
         }
+        
+        Node node = this.getNode(index);
+
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+
+        length -= 1;
+        return;
+            
     }
 
     public int pop(int idx) {
