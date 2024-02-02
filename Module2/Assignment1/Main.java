@@ -1,236 +1,237 @@
 import java.util.Random;
 
 public class Main {
-    private static Random random = new Random();
-    public static void main(String[] args) {
-        int[] randomIntArray = new int[20];
-        for (int i = 0; i < randomIntArray.length; i++) {
-            randomIntArray[i] = random.nextInt(100);
-        }
-        DoublyLinkedList dll = new DoublyLinkedList(randomIntArray);
-        System.out.println(dll);
-        System.out.println(dll.get(10));
-        dll.swap(2, 14);
-        System.out.println(dll);
+  private static Random random = new Random();
+
+  public static void main(String[] args) {
+    int[] randomIntArray = new int[20];
+    for (int i = 0; i < randomIntArray.length; i++) {
+      randomIntArray[i] = random.nextInt(100);
     }
+    DoublyLinkedList dll = new DoublyLinkedList(randomIntArray);
+    System.out.println(dll);
+    System.out.println(dll.get(10));
+    dll.swap(2, 14);
+    System.out.println(dll);
+  }
 }
 
 class DoublyLinkedList {
-    private Node head;
-    private Node tail;
-    private int length;
+  private Node head;
+  private Node tail;
+  private int length;
 
-    DoublyLinkedList() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
+  DoublyLinkedList() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  DoublyLinkedList(int head) {
+    Node newNode = new Node(head);
+    this.head = newNode;
+    this.tail = newNode;
+    this.length = 1;
+  }
+
+  DoublyLinkedList(int[] a) {
+    this();
+    for (int n : a) {
+      this.append(n);
+    }
+  }
+
+  class Node {
+    int data;
+    Node prev;
+    Node next;
+
+    Node(int data, Node prev, Node next) {
+      this.data = data;
+      this.prev = prev;
+      this.next = next;
     }
 
-    DoublyLinkedList(int head) {
-        Node newNode = new Node(head);
-        this.head = newNode;
-        this.tail = newNode;
-        this.length = 1;
+    Node(int data) {
+      this.data = data;
+      this.prev = null;
+      this.next = null;
+    }
+  }
+
+  public Node getNode(int index) {
+    Node currentNode = head;
+    for (int currentIndex = 0; currentIndex < index; currentIndex++) {
+      currentNode = currentNode.next;
     }
 
-    DoublyLinkedList(int[] a) {
-        this();
-        for (int n : a) {
-            this.append(n);
-        }
+    return currentNode;
+  }
+
+  public int get(int idx) {
+    return this.getNode(idx).data;
+  }
+
+  public void set(int idx, int data) {
+    Node node = this.getNode(idx);
+    node.data = data;
+  }
+
+  public void insert(int newData) {
+    Node newNode = new Node(newData);
+
+    if (head == null) {
+      head = newNode;
+      tail = newNode;
+      length += 1;
+      return;
     }
 
-    class Node {
-        int data;
-        Node prev;
-        Node next;
+    newNode.next = head;
+    head.prev = newNode;
 
-        Node(int data, Node prev, Node next) {
-            this.data = data;
-            this.prev = prev;
-            this.next = next;
-        }
+    head = newNode;
+    length += 1;
+  }
 
-        Node(int data) {
-            this.data = data;
-            this.prev = null;
-            this.next = null;
-        }
+  public void insert(int index, int newData) {
+
+    Node newNode = new Node(newData);
+    Node prevNode = this.getNode(index - 1);
+    Node nextNode = prevNode.next;
+
+    if (head == null) {
+      head = newNode;
+      tail = newNode;
+      length += 1;
+      return;
     }
 
-    public Node getNode(int index) {
-        Node currentNode = head;
-        for (int currentIndex = 0; currentIndex < index; currentIndex++) {
-            currentNode = currentNode.next;
-        }
+    prevNode.next = newNode;
+    newNode.next = nextNode;
+    newNode.prev = prevNode;
+    nextNode.prev = newNode;
 
-        return currentNode;
+    length += 1;
+  }
+
+  public void append(int newData) {
+    Node newNode = new Node(newData);
+
+    if (head == null) {
+      head = newNode;
+      tail = newNode;
+      length += 1;
+      return;
     }
 
-    public int get(int idx) {
-        return this.getNode(idx).data;
+    tail.next = newNode;
+    newNode.prev = tail;
+    tail = newNode;
+
+    length += 1;
+
+  }
+
+  public void append(DoublyLinkedList l) {
+    Node last = l.head;
+    last.prev = this.tail;
+    this.tail.next = last;
+    this.tail = l.tail;
+
+    length += l.getLength();
+
+    return;
+  }
+
+  public void delete(int index) {
+    if (index == 0) {
+      head = head.next;
+      head.prev = null;
+
+      length -= 1;
+      return;
     }
 
-    public void set(int idx, int data) {
-        Node node = this.getNode(idx);
-        node.data = data;
+    if (index == length - 1) {
+      tail = tail.prev;
+      tail.next = null;
+
+      length -= 1;
+      return;
     }
 
-    public void insert(int newData) {
-        Node newNode = new Node(newData);
+    Node node = this.getNode(index);
 
-        if (head == null) {
-            head = newNode;
-            tail = newNode;
-            length += 1;
-            return;
-        }
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
 
-        newNode.next = head;
-        head.prev = newNode;
+    length -= 1;
+    return;
 
-        head = newNode;
-        length += 1;
+  }
+
+  public int pop(int idx) {
+    int nodeValue = this.getNode(idx).data;
+    this.delete(idx);
+    return nodeValue;
+  }
+
+  public int pop() {
+    return this.pop(length - 1);
+  }
+
+  public int find(int val) {
+    int idx;
+
+    for (idx = 0; idx < length; idx++) {
+      if (this.getNode(idx).data == val) {
+        return idx;
+      }
     }
+    return -1;
+  }
 
-    public void insert(int index, int newData) {
+  public void swap(int idx1, int idx2) {
+    Node node1 = this.getNode(idx1);
+    Node node2 = this.getNode(idx2);
+    Node tempPrev = node1.prev;
+    Node tempNext = node1.next;
 
-        Node newNode = new Node(newData);
-        Node prevNode = this.getNode(index-1);
-        Node nextNode = prevNode.next;
+    node1.prev = node2.prev;
+    node1.next = node2.next;
 
-        if (head == null) {
-            head = newNode;
-            tail = newNode;
-            length += 1;
-            return;
-        }
+    node2.prev = tempPrev;
+    node2.next = tempNext;
 
-        prevNode.next = newNode;
-        newNode.next = nextNode;
-        newNode.prev = prevNode;
-        nextNode.prev = newNode;
+    node2.prev.next = node2;
+    node2.next.prev = node2;
 
-        length += 1;
+    node1.prev.next = node1;
+    node1.next.prev = node1;
+  }
+
+  public String toString() {
+    StringBuilder returnString = new StringBuilder();
+    Node last = head;
+    while (last != null) {
+      if (last.prev != null) {
+        returnString.append("<- ");
+      } else {
+        returnString.append("Head :: ");
+      }
+      returnString.append(last.data);
+      if (last.next != null) {
+        returnString.append(" ->");
+      } else {
+        returnString.append(" :: Tail");
+      }
+      last = last.next;
     }
+    return returnString.toString();
+  }
 
-    public void append(int newData) {
-        Node newNode = new Node(newData);
-
-        if (head == null) {
-            head = newNode;
-            tail = newNode;
-            length += 1;
-            return;
-        }
-
-        tail.next = newNode;
-        newNode.prev = tail;
-        tail = newNode;
-
-        length += 1;
-
-    }
-
-    public void append(DoublyLinkedList l) {
-        Node last = l.head;
-        last.prev = this.tail;
-        this.tail.next = last;
-        this.tail = l.tail;
-
-        length += l.getLength();
-
-        return;
-    }
-
-    public void delete(int index) {
-        if (index == 0) {
-            head = head.next;
-            head.prev = null;
-
-            length -= 1;
-            return;
-        } 
-
-        if (index == length-1) {
-            tail = tail.prev;
-            tail.next = null;
-
-            length -= 1;
-            return;
-        }
-        
-        Node node = this.getNode(index);
-
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-
-        length -= 1;
-        return;
-            
-    }
-
-    public int pop(int idx) {
-        int nodeValue = this.getNode(idx).data;
-        this.delete(idx);
-        return  nodeValue;
-    }
-
-    public int pop() {
-        return this.pop(length-1);
-    }
-
-    public int find(int val) {
-        int idx;
-
-        for (idx = 0; idx < length; idx++) {
-            if (this.getNode(idx).data == val) {
-                return idx;
-            }
-        }
-        return -1;
-    }
-
-    public void swap(int idx1, int idx2) {
-        Node node1 = this.getNode(idx1);
-        Node node2 = this.getNode(idx2);
-        Node tempPrev = node1.prev;
-        Node tempNext = node1.next;
-
-        node1.prev = node2.prev;
-        node1.next = node2.next;
-
-        node2.prev = tempPrev;
-        node2.next = tempNext;
-
-        node2.prev.next = node2;
-        node2.next.prev = node2;
-
-        node1.prev.next = node1;
-        node1.next.prev = node1;
-    }
-
-    public String toString() {
-        StringBuilder returnString = new StringBuilder();
-        Node last = head;
-        while (last != null) {
-            if (last.prev != null) {
-                returnString.append("<- ");
-            } else {
-                returnString.append("Head :: ");
-            }
-            returnString.append(last.data);
-            if (last.next != null) {
-                returnString.append(" ->");
-            } else {
-                returnString.append(" :: Tail");
-            }
-            last = last.next;
-        }
-        return returnString.toString();
-    }
-
-    public int getLength() {
-        return length;
-    }
+  public int getLength() {
+    return length;
+  }
 }
