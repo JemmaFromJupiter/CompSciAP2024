@@ -12,6 +12,7 @@ public class Main {
     System.out.println(dll);
     System.out.println(dll.get(10));
     dll.swap(2, 14);
+    dll.swap(1, 19);
     System.out.println(dll);
   }
 }
