@@ -228,8 +228,9 @@ class DoublyLinkedList {
       for (int j = 0; j < this.length - i - 1; j++) {
         if (this.get(j) < this.get(j + 1)) {
           swapped = true;
+          System.out.printf("%d, %d\n", this.get(j), this.get(j+1));
           this.swap(j, j + 1);
-
+          System.out.printf("%d, %d\n", this.get(j), this.get(j+1));
         }
       }
       if (swapped == false) {
@@ -240,21 +241,17 @@ class DoublyLinkedList {
 
   public String toString() {
     StringBuilder returnString = new StringBuilder();
+    System.out.println("Working...");
     Node last = head;
+    returnString.append("[");
     while (last != null) {
-      if (last.prev != null) {
-        returnString.append("<- ");
-      } else {
-        returnString.append("Head :: ");
-      }
-      returnString.append(last.data);
-      if (last.next != null) {
-        returnString.append(" ->");
-      } else {
-        returnString.append(" :: Tail");
-      }
+      if (last.next != null)
+        returnString.append(String.format("%d,", last.data));
+      else
+      returnString.append(String.format("%d", last.data));
       last = last.next;
     }
+    returnString.append("]");
     return returnString.toString();
   }
 
