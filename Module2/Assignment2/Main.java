@@ -3,15 +3,21 @@ import java.util.Random;
 public class Main {
   private static Random random = new Random();
 
+  public static int[] generateRandomArray(int max, int size) {
+    return random.ints(size, 0, max).toArray();
+  }
+
   public static void main(String[] args) {
-    int[] randArr = new int[10];
-    for (int i = 0; i < 10; i++) {
-      randArr[i] = random.nextInt(100);
-    }
+    int[] randArr = generateRandomArray(100, 10);
     DoublyLinkedList dll = new DoublyLinkedList(randArr);
+    DoublyLinkedList dll2 = new DoublyLinkedList(randArr);
     System.out.println(dll);
     dll.bubbleSort();
     System.out.println(dll);
+
+    System.out.println(dll2);
+    dll2.insertionSort();
+    System.out.println(dll2);
   }
 }
 
@@ -55,6 +61,18 @@ class DoublyLinkedList {
       this.data = data;
       this.prev = null;
       this.next = null;
+    }
+
+    public String toString() {
+      if (this.prev != null && this.next != null) {
+        return String.format("Node: [Prev: %d, This: %d, Next: %d]", this.prev.data, this.data, this.next.data);
+      } else if (this.prev == null) {
+        return String.format("Node: [Prev: null, This: %d, Next: %d]", this.data, this.next.data);
+      } else if (this.next == null) {
+        return String.format("Node: [Prev: %d, This: %d, Next: null]", this.prev.data, this.data);
+      } else {
+        return String.format("Node: [Prev: null, This: %d, Next: null]", this.data);
+      }
     }
   }
 
@@ -191,51 +209,118 @@ class DoublyLinkedList {
     return -1;
   }
 
+  private int getIndex(Node n) {
+    int idx = 0;
+    while (n != this.head) {
+      n = n.prev;
+      idx++;
+    }
+    return idx;
+  }
+
+  private boolean adjacent(Node obj1, Node obj2) {
+    return (obj1.next == obj2 || obj2.prev == obj1);
+  }
+
   public void swap(int idx1, int idx2) {
+    // System.out.printf("%d, %d\n", idx1, idx2);
+    //
+    // Checks to make sure idx1 and idx2 don't get mixed up.
+    if (idx1 > idx2) {
+      int tIdx = idx1;
+      idx1 = idx2;
+      idx2 = tIdx;
+    }
+
     Node node1 = this.getNode(idx1);
     Node node2 = this.getNode(idx2);
-    Node tempPrev = node1.prev;
-    Node tempNext = node1.next;
 
-    node1.prev = node2.prev;
+    Node tempPrev = node1.prev;
+    Node tempNext;
+
+    if (adjacent(node1, node2)) {
+      tempNext = node1;
+      node1.prev = node2;
+    } else {
+      tempNext = node1.next;
+      node1.prev = node2.prev;
+    }
     node1.next = node2.next;
 
     node2.prev = tempPrev;
     node2.next = tempNext;
 
+    Node tempNode = node1;
+
+    node1 = node2;
+    node2 = tempNode;
+
     if (node2.prev != null) {
       node2.prev.next = node2;
+    } else {
+      this.head = node2;
     }
 
     if (node2.next != null) {
       node2.next.prev = node2;
+    } else {
+      this.tail = node2;
     }
 
     if (node1.prev != null) {
       node1.prev.next = node1;
+    } else {
+      this.head = node1;
     }
 
     if (node1.next != null) {
       node1.next.prev = node1;
+    } else {
+      this.tail = node1;
     }
+
+  }
+
+  public void swap(Node obj1, Node obj2) {
+    int idx1 = this.getIndex(obj1);
+    int idx2 = this.getIndex(obj2);
+    // System.out.printf("idx1: %d, idx2: %d\n", idx1, idx2);
+    swap(idx1, idx2);
   }
 
   public void bubbleSort() {
     //
     boolean swapped;
+
     for (int i = 0; i < this.length; i++) {
       swapped = false;
       for (int j = 0; j < this.length - i - 1; j++) {
-        if (this.get(j) < this.get(j + 1)) {
+        Node cur = this.getNode(j);
+        if (cur.data > cur.next.data) {
+          this.swap(cur, cur.next);
           swapped = true;
-          System.out.printf("%d, %d\n", this.get(j), this.get(j+1));
-          this.swap(j, j + 1);
-          System.out.printf("%d, %d\n", this.get(j), this.get(j+1));
         }
       }
       if (swapped == false) {
         return;
       }
+    }
+  }
+
+  public void insertionSort() {
+    int i = 1;
+
+    while (i < this.length) {
+      int j = i;
+
+      Node cur = this.getNode(j);
+
+      while (j > 0 && cur.prev.data > cur.data) {
+        this.swap(cur, cur.prev);
+        j = j - 1;
+      }
+
+      i = i + 1;
     }
   }
 
@@ -245,10 +330,11 @@ class DoublyLinkedList {
     Node last = head;
     returnString.append("[");
     while (last != null) {
+      // System.out.println(last);
       if (last.next != null)
         returnString.append(String.format("%d,", last.data));
       else
-      returnString.append(String.format("%d", last.data));
+        returnString.append(String.format("%d", last.data));
       last = last.next;
     }
     returnString.append("]");
