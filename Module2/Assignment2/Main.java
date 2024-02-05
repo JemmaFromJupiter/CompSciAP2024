@@ -9,8 +9,10 @@ public class Main {
 
   public static void main(String[] args) {
     int[] randArr = generateRandomArray(100, 10);
+
     DoublyLinkedList dll = new DoublyLinkedList(randArr);
     DoublyLinkedList dll2 = new DoublyLinkedList(randArr);
+
     System.out.println(dll);
     dll.bubbleSort();
     System.out.println(dll);
@@ -249,11 +251,6 @@ class DoublyLinkedList {
 
     node2.prev = tempPrev;
     node2.next = tempNext;
-
-    Node tempNode = node1;
-
-    node1 = node2;
-    node2 = tempNode;
 
     if (node2.prev != null) {
       node2.prev.next = node2;
