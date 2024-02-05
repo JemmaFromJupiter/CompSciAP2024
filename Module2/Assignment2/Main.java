@@ -12,14 +12,18 @@ public class Main {
 
     DoublyLinkedList dll = new DoublyLinkedList(randArr);
     DoublyLinkedList dll2 = new DoublyLinkedList(randArr);
+    // System.out.println(dll);
+    // System.out.println(dll2);
 
-    System.out.println(dll);
+    System.out.println("Bubble Sort:");
+    System.out.printf("Initial: %s, isSorted: %s\n", dll, dll.isSorted());
     dll.bubbleSort();
-    System.out.println(dll);
+    System.out.printf("Final: %s, isSorted: %s\n\n", dll, dll.isSorted());
 
-    System.out.println(dll2);
+    System.out.println("Insertion Sort: ");
+    System.out.printf("Initial: %s, isSorted: %s\n", dll2, dll2.isSorted());
     dll2.insertionSort();
-    System.out.println(dll2);
+    System.out.printf("Final: %s, isSorted: %s\n", dll2, dll2.isSorted());
   }
 }
 
@@ -211,6 +215,14 @@ class DoublyLinkedList {
     return -1;
   }
 
+  public DoublyLinkedList split(int startIdx, int endIdx) {
+    DoublyLinkedList newDLL = new DoublyLinkedList();
+    for (int i = startIdx; i <= endIdx; i++) {
+      newDLL.append(this.get(i));
+    }
+    return newDLL;
+  }
+
   private int getIndex(Node n) {
     int idx = 0;
     while (n != this.head) {
@@ -276,6 +288,15 @@ class DoublyLinkedList {
       this.tail = node1;
     }
 
+  }
+
+  public boolean isSorted() {
+    for (int i = 0; i < this.length - 1; i++) {
+      if (this.get(i) > this.get(i + 1)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public void swap(Node obj1, Node obj2) {

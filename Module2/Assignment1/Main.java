@@ -16,6 +16,7 @@ public class Main {
     System.out.println(dll);
     dll.swap(1, 19);
     System.out.println(dll);
+    System.out.println(dll.split(5, 15));
   }
 }
 
@@ -193,6 +194,14 @@ class DoublyLinkedList {
       }
     }
     return -1;
+  }
+
+  public DoublyLinkedList split(int startIdx, int endIdx) {
+    DoublyLinkedList newDLL = new DoublyLinkedList();
+    for (int i = startIdx; i <= endIdx; i++) {
+      newDLL.append(this.get(i));
+    }
+    return newDLL;
   }
 
   private int getIndex(Node n) {
