@@ -323,7 +323,7 @@ class DoublyLinkedList {
 
   public String toString() {
     StringBuilder returnString = new StringBuilder();
-    System.out.println("Working...");
+    // System.out.println("Working...");
     Node last = head;
     returnString.append("[");
     while (last != null) {
