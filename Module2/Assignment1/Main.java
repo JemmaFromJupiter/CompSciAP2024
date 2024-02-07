@@ -17,6 +17,8 @@ public class Main {
     dll.swap(1, 19);
     System.out.println(dll);
     System.out.println(dll.split(5, 15));
+    dll.append(new DoublyLinkedList(new int[] { 1, 2, 3, 4, 5, 6 }));
+    System.out.println(dll);
   }
 }
 
