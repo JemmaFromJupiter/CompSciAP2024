@@ -1,7 +1,12 @@
 
 public class Main {
   public static void main(String[] args) {
-
+    Stack<Runnable> stack = new Stack<Runnable>();
+    stack.push(new Runnable() {
+      public void run() {
+        System.out.println("Hello World!");
+      }
+    });
   }
 }
 
@@ -15,12 +20,14 @@ class Stack<T> {
   }
 
   Stack(T data) {
-    Node newNode = new Node(data);
-    this.topLevel = newNode;
+    this.topLevel = new Node(data);
     this.size = 1;
   }
 
   Stack(T[] data) {
+    for (T item : data) {
+      this.push(item);
+    }
   }
 
   class Node {
@@ -45,8 +52,16 @@ class Stack<T> {
       return this.next;
     }
 
-    public T getData() {
+    public T get() {
       return this.data;
+    }
+
+    public void set(T data) {
+      this.data = data;
+    }
+
+    public String toString() {
+      return this.data.toString();
     }
   }
 
@@ -64,11 +79,30 @@ class Stack<T> {
     this.size += 1;
   }
 
+  public T pop() {
+    T tempData = this.topLevel.data;
+    this.topLevel = this.topLevel.next;
+    return tempData;
+  }
+
   public Node peek() {
     return this.topLevel;
+  }
+
+  public boolean isEmpty() {
+    return this.topLevel == null;
+  }
+
+  public int size() {
+    return this.size;
   }
 
   public String toString() {
     return "";
   }
+
+}
+
+class FunctionStack<Runnable> implements Stack<Runnable> {
+
 }
