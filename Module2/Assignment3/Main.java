@@ -5,25 +5,27 @@ public class Main {
   private static Scanner input = new Scanner(System.in);
 
   public static void main(String[] args) {
-    FloodList fl = new FloodList();
+    FloodList floodList = new FloodList();
     int boardSize = verifyInput("What is the board size?\nValues from 3 to 20.", 3, 20);
-    fl.makeBoard(boardSize);
+    floodList.makeBoard(boardSize);
 
-    while (!fl.win()) {
-      fl.displayBoard();
+    while (!floodList.win()) {
+      floodList.displayBoard();
       int userInput = verifyInput("Number: ", 0, 9);
-      fl.move(userInput);
+      floodList.move(userInput);
       clearConsole();
     }
-    fl.displayBoard();
+    floodList.displayBoard();
     System.out.println("You Won!");
   }
 
   public static void clearConsole() {
+    // Clears the console
     System.out.println("\033[H\033[2J");
   }
 
   public static int verifyInput(String message, int min, int max) {
+    // This function just gets text within a certain range, used for input.
     int userInput = 0;
 
     while (true) {
@@ -46,16 +48,19 @@ public class Main {
 }
 
 class FloodList {
+  // The floodlist class, this holds most of the game functionality.
   private static Random random = new Random();
   private Node head;
   private int size;
 
   class Node {
+    // Node class, this is a linked list Node.
     int data;
     private Node up, down, left, right;
     private boolean visited = false;
 
     public Node(int data) {
+      // gets a "data" argument and sets each other node to null.
       this.data = data;
       this.up = null;
       this.down = null;
@@ -104,10 +109,13 @@ class FloodList {
     }
 
     private Node[] getNeighbors() {
+      // Literally just returns an Array of Nodes...
       return new Node[] { this.up, this.down, this.right, this.left };
     }
 
     public void applyMove(int move, int initial) {
+      // Checks to make sure the node being checked has the same data as the root
+      // recursively calls through the NON-NULL neighbors and sets the data to "move"
       if (this.data != initial || this.visited == true) {
         return;
       }
@@ -131,6 +139,10 @@ class FloodList {
 
   public void makeBoard(int size) {
     // This function hurt me for a while.
+    //
+    // Makes 3 different checks, creates new nodes and links them appropriately
+    // according
+    // to their position in the 2D list.
     Node rowStart = this.head;
     Node curCol = rowStart;
     this.size = size;
@@ -166,6 +178,8 @@ class FloodList {
   }
 
   public void displayBoard() {
+    // Loops through each row and column and prints the value of the node.
+
     Node rowStart = this.head;
     Node curNode = rowStart;
 
@@ -181,6 +195,8 @@ class FloodList {
   }
 
   public boolean win() {
+    // Checks each node to see if it matches the root, if not, returns false.
+
     Node rowStart = this.head;
     Node curNode = rowStart;
 
@@ -198,6 +214,7 @@ class FloodList {
   }
 
   public int getRows() {
+    // Used for testing to make sure the number of rows is correct.
     Node curNode = this.head;
     int i = 0;
 
@@ -209,6 +226,7 @@ class FloodList {
   }
 
   public int getCols() {
+    // used in testing to make sure the number of columns is correct.
     Node curNode = this.head;
     int i = 0;
 
