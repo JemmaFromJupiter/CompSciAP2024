@@ -13,20 +13,20 @@ public class Main {
       fl.displayBoard();
       int userInput = verifyInput("Number: ", 0, 9);
       fl.move(userInput);
-      System.out.println();
+      clearConsole();
     }
     fl.displayBoard();
     System.out.println("You Won!");
   }
 
   public static void clearConsole() {
-    System.out.println("\033[2J");
+    System.out.println("\033[H\033[2J");
   }
 
   public static int verifyInput(String message, int min, int max) {
     int userInput = 0;
 
-    do {
+    while (true) {
       System.out.println(message);
       if (input.hasNextInt()) {
         userInput = input.nextInt();
@@ -41,7 +41,7 @@ public class Main {
         input.nextLine();
         System.out.println("\033[31mInput must be a number.\033[0m");
       }
-    } while (true);
+    }
   }
 }
 
