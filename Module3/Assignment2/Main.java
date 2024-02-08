@@ -2,15 +2,16 @@ import java.util.Iterator;
 
 public class Main {
   public static void main(String[] args) {
-    Queue<Integer> queue = new Queue<Integer>(new Integer[] { 1, 2, 3, 4, 5, 6, 7 });
+    Queue<Integer> queue = new Queue<Integer>(new Integer[] { 1, 2, 3, 4, 5 });
+    Queue<Integer> queue_ = new Queue<Integer>(new Integer[] { 6, 7, 8, 9, 10 });
+    queue.push(queue_);
+    queue.push(10);
+    queue.push(12);
     System.out.println(queue);
+    System.out.println(queue.has(5));
     for (int i : queue) {
-      System.out.println(i);
-    }
-    System.out.println();
-    queue.pop();
-    for (int i : queue) {
-      System.out.println(i);
+      System.out.println(queue);
+      queue.pop();
     }
     System.out.println(queue);
   }
@@ -50,8 +51,8 @@ class Queue<T> implements Iterable<T> {
   }
 
   public Queue(T data) {
-    this.last = new Node(data);
-    this.first = this.last;
+    this.first = new Node(data);
+    this.last = this.first;
     this.size = 1;
   }
 
@@ -107,8 +108,8 @@ class Queue<T> implements Iterable<T> {
     Node newNode = new Node(data);
 
     if (this.isEmpty()) {
-      this.last = newNode;
-      this.first = this.last;
+      this.first = newNode;
+      this.last = this.first;
       this.size += 1;
       return;
     }
@@ -119,16 +120,35 @@ class Queue<T> implements Iterable<T> {
 
   }
 
+  public void push(Queue<T> queue) {
+    this.last.setNext(queue.first);
+    this.last = queue.last;
+    this.size += queue.size();
+  }
+
   public T pop() {
-    T temp = this.first.data;
+    T temp = this.first.get();
     this.first = this.first.getNext();
     return temp;
+  }
+
+  public boolean has(T val) {
+    for (T item : this) {
+      if (item == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public int size() {
+    return this.size;
   }
 
   public String toString() {
     if (this.isEmpty()) {
       return "Queue is Empty.";
     }
-    return String.format("%s, %s", this.last, this.first);
+    return this.first.toString();
   }
 }
