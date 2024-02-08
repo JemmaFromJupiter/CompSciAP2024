@@ -18,6 +18,7 @@ public class Main {
 }
 
 class Queue<T> implements Iterable<T> {
+  // A queue implementing the First in First out structure.
   class QueueIterator implements Iterator<T> {
     Node next;
 
@@ -44,6 +45,7 @@ class Queue<T> implements Iterable<T> {
   private Node last;
   private int size;
 
+  // Constructors
   public Queue() {
     this.first = null;
     this.last = null;
@@ -66,6 +68,7 @@ class Queue<T> implements Iterable<T> {
     private T data;
     private Node next;
 
+    // Constructors
     public Node(T data, Node next) {
       this.data = data;
       this.next = next;
@@ -76,6 +79,7 @@ class Queue<T> implements Iterable<T> {
       this.next = null;
     }
 
+    // Setters and Getters
     public Node getNext() {
       return this.next;
     }
@@ -93,6 +97,7 @@ class Queue<T> implements Iterable<T> {
     }
 
     public String toString() {
+      // Nice String Format
       if (this.next == null) {
         return this.data.toString();
       }
@@ -105,6 +110,7 @@ class Queue<T> implements Iterable<T> {
   }
 
   public void push(T data) {
+    // Pushes an element to the back of the queue
     Node newNode = new Node(data);
 
     if (this.isEmpty()) {
@@ -121,6 +127,7 @@ class Queue<T> implements Iterable<T> {
   }
 
   public void push(Queue<T> queue) {
+    // pushes an external queue to the back of the queue
     if (this.isEmpty()) {
       this.first = queue.first;
       this.last = queue.last;
@@ -133,12 +140,14 @@ class Queue<T> implements Iterable<T> {
   }
 
   public T pop() {
+    // removes the first element in the queue.
     T temp = this.first.get();
     this.first = this.first.getNext();
     return temp;
   }
 
   public boolean has(T val) {
+    // checks if the queue holds a specified value
     for (T item : this) {
       if (item == val) {
         return true;

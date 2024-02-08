@@ -15,7 +15,9 @@ public class Main {
 }
 
 class Stack<T> implements Iterable<T> {
+  // A Stack using the First in Last out Data Structure
   private class StackIterator implements Iterator<T> {
+    // Creates an iterable class for easy forloop traversal
     Node next;
 
     public StackIterator(Stack<T> stack) {
@@ -23,10 +25,12 @@ class Stack<T> implements Iterable<T> {
     }
 
     public boolean hasNext() {
+      // checks if the next node is null
       return (this.next != null);
     }
 
     public T next() {
+      // Gets the next node in the stack
       T temp = this.next.get();
       this.next = this.next.getNext();
       return temp;
@@ -40,6 +44,7 @@ class Stack<T> implements Iterable<T> {
   private Node topLevel;
   private int size;
 
+  // Constructors, Self explanitory.
   Stack() {
     this.topLevel = null;
     this.size = 0;
@@ -57,9 +62,11 @@ class Stack<T> implements Iterable<T> {
   }
 
   class Node {
+    // A node class, stores data and structures the stack
     private T data;
     private Node next;
 
+    // Constructors
     Node(T data, Node next) {
       this.data = data;
       this.next = next;
@@ -70,6 +77,7 @@ class Stack<T> implements Iterable<T> {
       this.next = null;
     }
 
+    // Setters and Getters
     public void setNext(Node node) {
       this.next = node;
     }
@@ -87,6 +95,7 @@ class Stack<T> implements Iterable<T> {
     }
 
     public String toString() {
+      // Formats a nice string for the stack
       if (this.next == null) {
         return this.data.toString();
       }
@@ -96,6 +105,7 @@ class Stack<T> implements Iterable<T> {
   }
 
   private Node walkToBottom() {
+    // Walks to the first node in the stack.
     Node current = this.topLevel;
 
     while (current.getNext() != null) {
@@ -106,6 +116,7 @@ class Stack<T> implements Iterable<T> {
   }
 
   public void push(T data) {
+    // Pushes a new piece of data to the top of the stack
     Node newNode = new Node(data);
 
     if (this.isEmpty()) {
@@ -120,6 +131,7 @@ class Stack<T> implements Iterable<T> {
   }
 
   public void push(Stack<T> stack) {
+    // Pushes another stack to the top of the current stack
     Node bottom = stack.walkToBottom();
 
     bottom.setNext(this.topLevel);
@@ -128,24 +140,29 @@ class Stack<T> implements Iterable<T> {
   }
 
   public T pop() {
+    // removes the top of the stack and returns the data stored in it.
     T tempData = this.topLevel.data;
     this.topLevel = this.topLevel.getNext();
     return tempData;
   }
 
   public T peek() {
-    return this.topLevel.data;
+    // shows the topLevel
+    return this.topLevel.get();
   }
 
   public boolean isEmpty() {
+    // checks if the stack is empty
     return this.topLevel == null;
   }
 
   public int size() {
+    // returns the size of the stack
     return this.size;
   }
 
   public boolean has(T val) {
+    // Checks to see if a value is in the stack
     for (T item : this) {
       if (item == val) {
         return true;
