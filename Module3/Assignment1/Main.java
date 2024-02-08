@@ -108,7 +108,7 @@ class Stack<T> implements Iterable<T> {
   public void push(T data) {
     Node newNode = new Node(data);
 
-    if (this.topLevel == null) {
+    if (this.isEmpty()) {
       this.topLevel = newNode;
       this.size += 1;
       return;

@@ -121,6 +121,12 @@ class Queue<T> implements Iterable<T> {
   }
 
   public void push(Queue<T> queue) {
+    if (this.isEmpty()) {
+      this.first = queue.first;
+      this.last = queue.last;
+      this.size += queue.size();
+      return;
+    }
     this.last.setNext(queue.first);
     this.last = queue.last;
     this.size += queue.size();
