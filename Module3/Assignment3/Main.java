@@ -347,22 +347,30 @@ class Lexer {
   }
 
   private boolean hasPrecedence(Operator op1, Operator op2) {
-    // checks two operators to determine if one has precedence over the other.
-    // Brackets alwats have precedence over all.
-    if (op2.equals('(') || op2.equals(')'))
-      return false;
+    // Returns a true or false value based on if the precedence of op1 is less than
+    // or equal to op2.
+    return precedence(op1) <= precedence(op2);
+  }
 
-    // Checks if either Division and multiplication are first order operations,
-    // so this checks if the first operator is a * or /
-    // Also checks for exponentation
-    if (((op1.equals('*') || op1.equals('/')) &&
-        (op2.equals('+') || op2.equals('-'))) ||
-        (op1.equals('^') &&
-            (op2.equals('+') || op2.equals('-') || op2.equals('*') || op2.equals('/'))))
-      return false;
+  private int precedence(Operator op) {
+    // A switch that returns the precedence of the operator
 
-    else
-      return true;
+    // Using this because while it does the same thing as the previous
+    // implementation, this looks neater and most likely operates better.
+    switch (op.op) {
+      case '^':
+        return 3;
+      case '/':
+        return 2;
+      case '*':
+        return 2;
+      case '-':
+        return 1;
+      case '+':
+        return 1;
+      default:
+        return 0;
+    }
   }
 
   private void makeNumber() {
