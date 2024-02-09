@@ -1,4 +1,6 @@
-
+import java.io.File;
+import java.util.Scanner;
+import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.Iterator;
 
@@ -7,12 +9,18 @@ public class Main {
   public static void main(String[] args) {
     ExpressionEvaluator eval = new ExpressionEvaluator();
 
-    double eq1 = eval.evaluate("1 + 2 - (3 * 4)");
-    System.out.printf("Evaluated Expression: %f\n", eq1);
-    double eq2 = eval.evaluate("7 * 6^3 + (3 - 2) / 10");
-    System.out.printf("Evaluated Expression: %f\n", eq2);
-    double eq3 = eval.evaluate("2 * (1/2)");
-    System.out.printf("Evaluated Expression: %f\n", eq3);
+    try {
+      File mathFile = new File("test.math");
+      Scanner in = new Scanner(mathFile);
+
+      while (in.hasNextLine()) {
+        System.out.println(eval.evaluate(in.nextLine()));
+      }
+      in.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
   }
 }
 
@@ -250,6 +258,9 @@ class Lexer {
   public void eval() {
     this.pos = 0;
     while (this.pos < this.expr.length) {
+      if (this.currentChar == '\n') {
+        return;
+      }
 
       if (this.currentChar == ' ') {
 
@@ -317,10 +328,19 @@ class Lexer {
 
   private void makeNumber() {
     StringBuilder numStr = new StringBuilder();
+    int decimalCount = 0;
 
     while (this.pos < this.expr.length &&
-        Character.isDigit(this.currentChar)) {
-      numStr.append(this.currentChar);
+        (Character.isDigit(this.currentChar) || this.currentChar == '.')) {
+      if (this.currentChar == '.') {
+        if (decimalCount == 1) {
+          break;
+        }
+        decimalCount++;
+        numStr.append('.');
+      } else {
+        numStr.append(this.currentChar);
+      }
       this.advance();
     }
 
