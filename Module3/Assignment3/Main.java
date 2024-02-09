@@ -14,7 +14,9 @@ public class Main {
       Scanner in = new Scanner(mathFile);
 
       while (in.hasNextLine()) {
-        System.out.println(eval.evaluate(in.nextLine()));
+        String data = in.nextLine().replace(';', '\0');
+        // System.out.print(data);
+        System.out.println(eval.evaluate(data));
       }
       in.close();
     } catch (FileNotFoundException e) {
@@ -193,6 +195,10 @@ class Stack<T> implements Iterable<T> {
 class Operator {
   char op;
 
+  public Operator() {
+    this.op = '\0';
+  }
+
   public Operator(char op) {
     this.op = op;
   }
@@ -241,12 +247,14 @@ class Lexer {
 
   public Lexer(char[] expr) {
     this.expr = expr;
-    this.currentChar = expr[0];
+    if (this.expr.length > 0)
+      this.currentChar = expr[0];
   }
 
   public void set(char[] expr) {
     this.expr = expr;
-    this.currentChar = this.expr[0];
+    if (this.expr.length > 0)
+      this.currentChar = this.expr[0];
   }
 
   private void advance() {
@@ -257,12 +265,13 @@ class Lexer {
 
   public void eval() {
     this.pos = 0;
+
     while (this.pos < this.expr.length) {
-      if (this.currentChar == '\n') {
-        return;
+      if (this.currentChar == '\n' || this.currentChar == '\r' || this.currentChar == ';' || this.expr.length == 0) {
+        break;
       }
 
-      if (this.currentChar == ' ') {
+      if (this.currentChar == ' ' || this.currentChar == '\0') {
 
         this.advance();
 
@@ -284,10 +293,11 @@ class Lexer {
         this.advance();
 
       } else if (this.currentChar == '+' || this.currentChar == '-' || this.currentChar == '*'
-          || this.currentChar == '/' || this.currentChar == '^') {
+          || this.currentChar == '/' || this.currentChar == '^')
+
+      {
 
         Operator thisOp = new Operator(this.currentChar);
-        // System.out.println(thisOp);
         while (!this.operatorStack.isEmpty()
             && this.hasPrecedence(thisOp, this.operatorStack.peek())) {
           Operator op = this.operatorStack.pop();
@@ -304,7 +314,9 @@ class Lexer {
 
     }
 
-    while (!operatorStack.isEmpty()) {
+    while (!operatorStack.isEmpty())
+
+    {
 
       Operator op = this.operatorStack.pop();
       this.valueStack.push(op.apply(this.valueStack.pop(), this.valueStack.pop()));
@@ -349,36 +361,40 @@ class Lexer {
 }
 
 class ExpressionEvaluator {
-  private Lexer lexer;
+  private Lexer lexer = new Lexer();
   private char[] expr;
 
   public ExpressionEvaluator() {
     this.expr = new char[] {};
-    this.lexer = new Lexer();
   }
 
   public ExpressionEvaluator(String expr) {
     this.expr = expr.toCharArray();
-    this.lexer = new Lexer();
   }
 
-  public double evaluate(String expr) {
-    System.out.printf("Evaluating %s\n", expr);
-    lexer.set(expr.toCharArray());
-    lexer.eval();
+  public Object evaluate(String expr) {
+    if (expr.length() != 0) {
+      System.out.printf("Evaluating %s\n", expr);
+      lexer.set(expr.toCharArray());
+      lexer.eval();
 
-    return lexer.valueStack.pop();
+      return lexer.valueStack.pop();
+    }
+    return "";
   }
 
-  public double evaluate(char[] expr) {
-    System.out.printf("Evaluating %s\n", expr.toString());
-    lexer.set(expr);
-    lexer.eval();
+  public Object evaluate(char[] expr) {
+    if (expr.length != 0) {
+      System.out.printf("Evaluating %s\n", expr.toString());
+      lexer.set(expr);
+      lexer.eval();
 
-    return lexer.valueStack.pop();
+      return lexer.valueStack.pop();
+    }
+    return "";
   }
 
-  public Double evaluate() {
+  public Object evaluate() {
     return this.evaluate(this.expr);
   }
 }
