@@ -193,8 +193,10 @@ class Stack<T> implements Iterable<T> {
 }
 
 class Operator {
+  // A class used to store and apply operators to values
   char op;
 
+  // Constructors
   public Operator() {
     this.op = '\0';
   }
@@ -204,6 +206,8 @@ class Operator {
   }
 
   public double apply(double b, double a) {
+    // Checks the different operator cases. Adding, Subtracting, Multiplication,
+    // Division, and Exponentation.
     switch (this.op) {
       case '+':
         return a + b;
@@ -234,12 +238,14 @@ class Operator {
 }
 
 class Lexer {
+  // Multiple different variables, two stacks for values and operators
   public Stack<Operator> operatorStack = new Stack<Operator>();
   public Stack<Double> valueStack = new Stack<Double>();
-  private char[] expr;
-  private char currentChar;
-  private int pos = 0;
+  private char[] expr; // A character array of the expression
+  private char currentChar; // The character at the current position of the pointer.
+  private int pos = 0; // A pointer to the current character selected
 
+  // Constructors
   public Lexer() {
     this.expr = new char[] {};
     this.currentChar = '\0';
@@ -252,25 +258,31 @@ class Lexer {
   }
 
   public void set(char[] expr) {
+    // Used for resetting expressions and setting new expressions
     this.expr = expr;
     if (this.expr.length > 0)
       this.currentChar = this.expr[0];
   }
 
   private void advance() {
+    // Moves the pointer forward in the expression
     this.pos++;
     if (this.pos < this.expr.length)
-      this.currentChar = this.expr[this.pos];
+      this.currentChar = this.expr[this.pos]; // Sets the current character to the corresponding pointer position
   }
 
   public void eval() {
+    // Evaluates the expression declared inside of the class
     this.pos = 0;
 
     while (this.pos < this.expr.length) {
+      // Stops character checks and evaluation stage if any end of line characters are
+      // present
       if (this.currentChar == '\n' || this.currentChar == '\r' || this.currentChar == ';' || this.expr.length == 0) {
         break;
       }
 
+      // if the character is a space or empty, the program will skip the character.
       if (this.currentChar == ' ' || this.currentChar == '\0') {
 
         this.advance();
@@ -281,10 +293,12 @@ class Lexer {
 
       } else if (this.currentChar == '(') {
 
+        // pushes a LPAREN to the operator stack.
         this.operatorStack.push(new Operator(this.currentChar));
         this.advance();
 
       } else if (this.currentChar == ')') {
+        // Does all operations inside of brackets before anything else.
         while (!this.operatorStack.peek().equals('(')) {
           Operator op = this.operatorStack.pop();
           this.valueStack.push(op.apply(this.valueStack.pop(), this.valueStack.pop()));
@@ -297,7 +311,11 @@ class Lexer {
 
       {
 
+        // Makes a new Operator for comparrisons.
         Operator thisOp = new Operator(this.currentChar);
+
+        // Ensures the operator stack still has operators in it, and checks the
+        // precedence of the operators
         while (!this.operatorStack.isEmpty()
             && this.hasPrecedence(thisOp, this.operatorStack.peek())) {
           Operator op = this.operatorStack.pop();
@@ -308,12 +326,16 @@ class Lexer {
 
       } else {
 
+        // If there is an invalid character that doesnt match the above specifications,
+        // the program will through an error.
         throw new InvalidParameterException(String.format("Invalid Token '%c'", this.currentChar));
 
       }
 
     }
 
+    // Final evaluation stage, this finishes evaluation if the first while loop
+    // didn't evaluate all operations
     while (!operatorStack.isEmpty())
 
     {
@@ -325,9 +347,14 @@ class Lexer {
   }
 
   private boolean hasPrecedence(Operator op1, Operator op2) {
+    // checks two operators to determine if one has precedence over the other.
+    // Brackets alwats have precedence over all.
     if (op2.equals('(') || op2.equals(')'))
       return false;
 
+    // Checks if either Division and multiplication are first order operations,
+    // so this checks if the first operator is a * or /
+    // Also checks for exponentation
     if (((op1.equals('*') || op1.equals('/')) &&
         (op2.equals('+') || op2.equals('-'))) ||
         (op1.equals('^') &&
@@ -339,9 +366,15 @@ class Lexer {
   }
 
   private void makeNumber() {
+    // Creates a string builder that allows for the creation of a new Double
     StringBuilder numStr = new StringBuilder();
     int decimalCount = 0;
 
+    // checks if the expression is over, and if the current character is a Digit or
+    // a Decimal
+    // if the character is a decimal, this checks if there are already decimals
+    // if not, appends the decimal to the numStr
+    // otherwise, it appends the number to the numStr and moves the pointer forward
     while (this.pos < this.expr.length &&
         (Character.isDigit(this.currentChar) || this.currentChar == '.')) {
       if (this.currentChar == '.') {
@@ -356,6 +389,7 @@ class Lexer {
       this.advance();
     }
 
+    // Sends to the valueStack
     this.valueStack.push(Double.parseDouble(numStr.toString()));
   }
 }
@@ -364,6 +398,7 @@ class ExpressionEvaluator {
   private Lexer lexer = new Lexer();
   private char[] expr;
 
+  // Constructors
   public ExpressionEvaluator() {
     this.expr = new char[] {};
   }
@@ -372,6 +407,7 @@ class ExpressionEvaluator {
     this.expr = expr.toCharArray();
   }
 
+  // Evaluates a STRING input
   public Object evaluate(String expr) {
     if (expr.length() != 0) {
       System.out.printf("Evaluating %s\n", expr);
@@ -383,6 +419,7 @@ class ExpressionEvaluator {
     return "";
   }
 
+  // Evaluates a CHARACTER ARRAY input
   public Object evaluate(char[] expr) {
     if (expr.length != 0) {
       System.out.printf("Evaluating %s\n", expr.toString());
@@ -394,6 +431,7 @@ class ExpressionEvaluator {
     return "";
   }
 
+  // Can only evaluate if the local expression is set
   public Object evaluate() {
     return this.evaluate(this.expr);
   }
