@@ -11,11 +11,22 @@ public class Main {
   public static void main(String[] args) {
     BinaryTree myBT = new BinaryTree();
 
-    for (int i = 40; i > 0; i--) {
+    for (int i = 1; i <= 50; i++)
       myBT.insert(i);
 
-      System.out.println(myBT);
-    }
+    System.out.println(myBT);
+
+    myBT.balanceTree();
+
+    System.out.println(myBT);
+
+    myBT.delete(25);
+    myBT.delete(34);
+    myBT.delete(16);
+
+    System.out.println(myBT);
+
+    System.out.println(myBT.getWidth());
   }
 }
 
@@ -23,6 +34,7 @@ class BinaryTree {
   // Binary search tree that automatically sorts keys in order.
 
   Node root;
+  int width = 0;
 
   // Constructors
   public BinaryTree() {
@@ -74,6 +86,10 @@ class BinaryTree {
       this.key = data;
     }
 
+    public boolean hasChildren() {
+      return (this.left != null && this.right != null);
+    }
+
   }
 
   // --- Inserts a new node or another binary tree recursively --- //
@@ -109,6 +125,11 @@ class BinaryTree {
     return this.getHeight(this.root);
   }
 
+  public int getWidth() {
+    this.getWidth(this.root);
+    return this.width;
+  }
+
   private int getHeight(Node node) {
     if (node == null) {
       return 0;
@@ -124,6 +145,15 @@ class BinaryTree {
       }
     }
 
+  }
+
+  private void getWidth(Node node) {
+    if (!node.hasChildren()) {
+      this.width++;
+    } else {
+      this.getWidth(node.getLeft());
+      this.getWidth(node.getRight());
+    }
   }
 
   // -------------------------------------------------------------- //
@@ -235,9 +265,9 @@ class BinaryTree {
   private void inOrder(Node node) {
     // Prints the tree in order, so the smallest value to the biggest value.
     if (node != null) {
-      this.inOrder(node.left);
+      this.inOrder(node.getLeft());
       System.out.printf("%d ", node.get());
-      this.inOrder(node.right);
+      this.inOrder(node.getRight());
     }
   }
 
