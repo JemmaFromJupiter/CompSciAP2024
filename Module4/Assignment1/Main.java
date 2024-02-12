@@ -1,4 +1,4 @@
-import java.util.Vector;
+import java.util.Vector; // Literally ONLY used to balance the binary tree.
 import java.util.Random;
 
 public class Main {
@@ -10,17 +10,12 @@ public class Main {
 
   public static void main(String[] args) {
     BinaryTree myBT = new BinaryTree();
-    int[] arr = makeRandArray(100, 0, 100);
 
-    for (int i : arr) {
+    for (int i = 40; i > 0; i--) {
       myBT.insert(i);
+
+      System.out.println(myBT);
     }
-
-    System.out.println(myBT);
-
-    myBT.balanceTree();
-
-    System.out.println(myBT);
   }
 }
 
@@ -36,6 +31,11 @@ class BinaryTree {
 
   public BinaryTree(int root) {
     this.root = new Node(root);
+  }
+
+  public BinaryTree(int[] data) {
+    for (int i : data)
+      this.insert(i);
   }
 
   private class Node {
@@ -104,7 +104,7 @@ class BinaryTree {
 
   // ------------------------------------------------------------- //
 
-  // --- Gets the maximum height and width of the binary tree recursively --- //
+  // --- Gets the maximum height of the binary tree recursively --- //
   public int getHeight() {
     return this.getHeight(this.root);
   }
@@ -113,8 +113,9 @@ class BinaryTree {
     if (node == null) {
       return 0;
     } else {
-      int lHeight = getHeight(node.left);
-      int rHeight = getHeight(node.right);
+      // Recursively calls getHeight on each node until the node is null
+      int lHeight = getHeight(node.getLeft());
+      int rHeight = getHeight(node.getRight());
 
       if (lHeight > rHeight) {
         return (lHeight + 1);
@@ -184,7 +185,7 @@ class BinaryTree {
 
     } else {
       // If the node has two children, the node will be replaced by its next in-order
-      // successor
+      // successor.
       // successor is always left of its parent
 
       Node successorParent = node;
@@ -232,6 +233,7 @@ class BinaryTree {
   }
 
   private void inOrder(Node node) {
+    // Prints the tree in order, so the smallest value to the biggest value.
     if (node != null) {
       this.inOrder(node.left);
       System.out.printf("%d ", node.get());
@@ -240,6 +242,7 @@ class BinaryTree {
   }
 
   private void preOrder(Node node) {
+    // Prints the tree in pre-order, so root comes before everything else.
     if (node != null) {
       System.out.printf("%d ", node.get());
       this.preOrder(node.getLeft());
@@ -248,6 +251,7 @@ class BinaryTree {
   }
 
   private void postOrder(Node node) {
+    // Prints tree in post-order, root is the last element printed.
     if (node != null) {
       this.postOrder(node.getLeft());
       this.postOrder(node.getRight());
@@ -262,6 +266,8 @@ class BinaryTree {
   // This is pretty much optional, but I wanted to include it.
 
   private void storeNodes(Node node, Vector<Node> nodes) {
+    // Stores nodes in order in a Vector.
+    // this allows the nodes to be separated by indices.
     if (node == null)
       return;
 
@@ -274,9 +280,11 @@ class BinaryTree {
     if (start > end)
       return null;
 
+    // Make the middle element in the Vector the root.
     int mid = (start + end) / 2;
     Node node = nodes.get(mid);
 
+    // construct the right and left trees using in order traversal.
     node.setLeft(balanceTree(nodes, start, mid - 1));
     node.setRight(balanceTree(nodes, mid + 1, end));
 
@@ -288,6 +296,7 @@ class BinaryTree {
     this.storeNodes(this.root, nodes);
 
     int size = nodes.size();
+    // Sets the current tree's root to the result of the above function.
     this.root = balanceTree(nodes, 0, size - 1);
   }
 
@@ -295,20 +304,24 @@ class BinaryTree {
 
   // Formats the tree to a nice String.
   // I DO NOT OWN THE PRETTY PRINTING CODE, I got fed up with trying to pretty
-  // print it.
+  // print it on my own.
 
   private String fmt(Node root) {
 
     if (root == null) {
       return "";
     }
-
+    // creates a new string builder used for formatting the pretty string. Appends
+    // the root.
     StringBuilder sb = new StringBuilder();
     sb.append(root.get());
 
+    // Declares a Right and Left pointer to show which branch of the tree is being
+    // shown
     String pointerRight = "└──";
     String pointerLeft = (root.getRight() != null) ? "├──" : "└──";
 
+    // Builds the left and right sides of the string respectively
     fmt(sb, "", pointerLeft, root.getLeft(), root.getRight() != null);
     fmt(sb, "", pointerRight, root.getRight(), false);
 
@@ -317,23 +330,30 @@ class BinaryTree {
 
   private void fmt(StringBuilder sb, String padding, String pointer, Node node,
       boolean hasRightSibling) {
+    // This actually builds the stylised string.
     if (node != null) {
       sb.append("\n");
       sb.append(padding);
       sb.append(pointer);
       sb.append(node.get());
 
+      // This applies padding to the string builder
       StringBuilder paddingBuilder = new StringBuilder(padding);
+      // Checks if the node has a right sibling, if so, the node will append a
+      // downward "pipe"
       if (hasRightSibling) {
         paddingBuilder.append("│  ");
       } else {
         paddingBuilder.append("   ");
       }
 
+      // Converts the padding to s String and declares new "pointers"
       String paddingForBoth = paddingBuilder.toString();
       String pointerRight = "└──";
       String pointerLeft = (node.getRight() != null) ? "├──" : "└──";
 
+      // Recursively Calls the fmt(sb, padding, pointer, node, hasRightSibling)
+      // function.
       fmt(sb, paddingForBoth, pointerLeft, node.getLeft(), node.getRight() != null);
       fmt(sb, paddingForBoth, pointerRight, node.getRight(), false);
     }
