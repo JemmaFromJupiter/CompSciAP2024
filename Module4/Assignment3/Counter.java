@@ -1,7 +1,8 @@
 import java.util.HashMap;
 
 public class Counter extends HashMap<Character, Integer> {
-
+  // Simply counts the number of characters in a String/File and stores the
+  // frequency with a Character key.
   public Counter() {
 
   }
