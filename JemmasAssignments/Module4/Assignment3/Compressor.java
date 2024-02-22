@@ -82,6 +82,9 @@ public class Compressor {
     for (char c : this.encodingMap.keySet()) {
       if (c == '\n')
         System.out.printf("│ %-6s │ %-9s │ %-30s │%n", this.charFreqs.get(c), "\\n", this.encodingMap.get(c));
+      else if (c == '\r')
+        System.out.printf("│ %-6s │ %-9s │ %-30s │%n", this.charFreqs.get(c), "\\r", this.encodingMap.get(c));
+
       else
         System.out.printf("│ %-6s │ %-9s │ %-30s │%n", this.charFreqs.get(c), c, this.encodingMap.get(c));
 
@@ -170,11 +173,11 @@ public class Compressor {
   public void compress() {
     // compresses the data and writes the compressed bytes to a file.
     // deletes original file afterwards.
+    String fileName = this.file.getName().substring(0, this.file.getName().lastIndexOf(".")) + ".bin";
     this.buildTree();
     this.encode();
 
-    String fileName = this.file.getName().substring(0, this.file.getName().lastIndexOf(".")) + ".bin";
     this.writeEncodedDataToFile(fileName, this.encodeString(this.fileContents));
-    this.file.delete();
+    // this.file.delete();
   }
 }
