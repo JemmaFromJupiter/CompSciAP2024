@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 
 public class Compressor {
   private File file = null;
+  private String path;
   private Counter charFreqs;
   private MinHeap nodeQueue;
   private String fileContents;
@@ -18,6 +20,7 @@ public class Compressor {
   public Compressor(File f) {
     this.charFreqs = new Counter();
     this.file = f;
+    this.path = this.file.getAbsolutePath();
     this.fileContents = this.readFile();
     charFreqs.count(this.fileContents);
     this.nodeQueue = new MinHeap(this.charFreqs.size());
@@ -129,8 +132,9 @@ public class Compressor {
 
     // uses a stringbuilder to encode the string and return a new string.
     StringBuilder encodedString = new StringBuilder();
-    for (char c : s.toCharArray())
+    for (char c : s.toCharArray()) {
       encodedString.append(this.encodingMap.get(c));
+    }
 
     return encodedString.toString();
   }
@@ -139,7 +143,9 @@ public class Compressor {
 
     // converts input encoded data to a byteArray that is used to write to a
     // BufferedOutputStream in other functions.
-
+    //
+    // while (encodedData.length() % 8 != 0)
+    // encodedData += "0";
     // gets the number of bytes in the encoded data (8 bits to 1 byte).
     // and makes a new byte array of that size.
     int numBytes = (int) Math.ceil(encodedData.length() / 8);
@@ -161,7 +167,7 @@ public class Compressor {
   private void writeEncodedDataToFile(String outputFile, String encodedString) {
     // uses a BufferedOutputStream to write the compressed bytes to a file as actual
     // bytes.
-
+    // System.out.println(encodedString);
     try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
       byte[] bytes = convertToByte(encodedString); // Function from above. useful eh?
       outputStream.write(bytes);
@@ -170,14 +176,34 @@ public class Compressor {
     }
   }
 
+  private void createLookupTable() {
+    StringBuilder lookupTableSB = new StringBuilder();
+    for (char c : this.encodingMap.keySet()) {
+      lookupTableSB.append(String.format("%s->%s%n",
+          c == '\n' ? "\\n" : c == '\r' ? "\\r" : c == '\\' ? "\\" : c, this.encodingMap.get(c)));
+    }
+
+    String lookupTable = lookupTableSB.toString().strip();
+    try {
+      File lookupTableFile = new File(this.path.substring(0, this.path.lastIndexOf(".")) + ".lookup");
+      lookupTableFile.createNewFile();
+      FileWriter lTWriter = new FileWriter(lookupTableFile);
+      lTWriter.write(lookupTable);
+      lTWriter.close();
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
+
   public void compress() {
     // compresses the data and writes the compressed bytes to a file.
     // deletes original file afterwards.
-    String fileName = this.file.getName().substring(0, this.file.getName().lastIndexOf(".")) + ".bin";
+    String fileName = this.path.substring(0, this.path.lastIndexOf(".")) + ".bin";
     this.buildTree();
     this.encode();
+    this.createLookupTable();
 
     this.writeEncodedDataToFile(fileName, this.encodeString(this.fileContents));
-    // this.file.delete();
+    this.file.delete();
   }
 }
