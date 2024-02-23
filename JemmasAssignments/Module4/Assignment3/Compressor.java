@@ -195,15 +195,17 @@ public class Compressor {
     }
   }
 
-  public void compress() {
+  public void compress() throws IOException {
     // compresses the data and writes the compressed bytes to a file.
     // deletes original file afterwards.
-    String fileName = this.path.substring(0, this.path.lastIndexOf(".")) + ".bin";
-    this.buildTree();
-    this.encode();
-    this.createLookupTable();
+    if (this.file.exists()) {
+      String fileName = this.path.substring(0, this.path.lastIndexOf(".")) + ".bin";
+      this.buildTree();
+      this.encode();
+      this.createLookupTable();
 
-    this.writeEncodedDataToFile(fileName, this.encodeString(this.fileContents));
-    this.file.delete();
+      this.writeEncodedDataToFile(fileName, this.encodeString(this.fileContents));
+      this.file.delete();
+    }
   }
 }

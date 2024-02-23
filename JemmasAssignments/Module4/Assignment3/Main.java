@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.security.InvalidParameterException;
 
 public class Main {
@@ -27,16 +28,23 @@ public class Main {
   }
 
   public static void compress(String argument) {
-    textFile = new File(argument);
-    comp = new Compressor(textFile);
-    comp.compress();
+    try {
+      textFile = new File(argument);
+      comp = new Compressor(textFile);
+      comp.compress();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public static void decompress(String argument) {
-    compressedFile = new File(argument);
-    decmp = new Decompressor(compressedFile);
-    decmp.decompress();
-
+    try {
+      compressedFile = new File(argument);
+      decmp = new Decompressor(compressedFile);
+      decmp.decompress();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }

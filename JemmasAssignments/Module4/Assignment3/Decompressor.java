@@ -98,7 +98,7 @@ public class Decompressor {
 
   }
 
-  public void decompress() {
+  public void decompress() throws IOException {
     this.encodedBinary = decodeData();
     this.writeToFile();
   }
