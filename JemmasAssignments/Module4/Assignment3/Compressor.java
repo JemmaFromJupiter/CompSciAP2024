@@ -143,9 +143,9 @@ public class Compressor {
 
     // converts input encoded data to a byteArray that is used to write to a
     // BufferedOutputStream in other functions.
-    //
-    // while (encodedData.length() % 8 != 0)
-    // encodedData += "0";
+
+    while (encodedData.length() % 8 != 0)
+      encodedData += "0";
     // gets the number of bytes in the encoded data (8 bits to 1 byte).
     // and makes a new byte array of that size.
     int numBytes = (int) Math.ceil(encodedData.length() / 8);
