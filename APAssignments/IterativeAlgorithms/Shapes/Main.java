@@ -12,15 +12,14 @@ public class Main {
 
   public static void printHollowSquare(int size) {
     for (int i = 0; i < size; i++) {
-      for (int j = 0; j < size; j++) {
-        if (i == 0 || i == size - 1 || j == 0 || j == size - 1) {
-          System.out.print("* ");
-        } else {
-          System.out.print("  ");
-        }
+      if (i == 0 || i == size - 1) {
+        System.out.print("* ".repeat(size));
+      } else {
+        System.out.print("*" + " ".repeat(2 * size - 3) + "*");
       }
       System.out.println();
     }
+
   }
 
   public static void printHollowTriangle(int size) {
