@@ -1,56 +1,88 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 
-public class RuntimeDatabase {
-  private StudentNode root;
-  private int StudentCount;
+public class RuntimeDatabase extends ArrayList<Student> {
 
-  class StudentNode {
-    private Student StudentData;
-    private StudentNode Parent;
-    private StudentNode Left, Right;
+  public RuntimeDatabase() {
 
-    public StudentNode() {
+  }
 
-    }
+  public RuntimeDatabase(int size) {
+    super(size);
+  }
 
-    public StudentNode(Student StudentData) {
-      this.setStudentData(StudentData);
-    }
+  public RuntimeDatabase(Student[] initialValues) {
+    super(Arrays.asList(initialValues));
+    this.heapify();
+  }
 
-    public Student getStudentData() {
-      return this.StudentData;
-    }
+  private int leftChild(int N) {
+    return (2 * N) + 1;
+  }
 
-    public void setStudentData(Student StudentData) {
-      this.StudentData = StudentData;
-    }
+  private int rightChild(int N) {
+    return (2 * N) + 2;
+  }
 
-    public StudentNode getParentNode() {
-      return this.Parent;
-    }
+  public void append(int ID, String FirstName, String LastName, String PreferredFirstName, String PreferredLastName,
+      String Gender, String Pronouns, String Email, String DoB) {
+    // Do I really need to explain this?
+    this.add(
+        new Student(ID, FirstName, LastName, PreferredFirstName, PreferredLastName, Gender, Pronouns,
+            Email,
+            DoB));
+    this.heapify();
+  }
 
-    public void setParent(StudentNode Parent) {
-      this.Parent = Parent;
-    }
-
-    public StudentNode getRight() {
-      return this.Right;
-    }
-
-    public StudentNode getLeft() {
-      return this.Left;
-    }
-
-    public void setRight(StudentNode newRight) {
-      this.Right = newRight;
-    }
-
-    public void setLeft(StudentNode newLeft) {
-      this.Left = newLeft;
+  private void heapify() {
+    // Literally just a for loop going backwards.
+    for (int i = this.size() - 1; i >= 0; i--) {
+      this.heapNode(i);
     }
   }
 
-  private void addStudent(StudentNode node) {
+  private void heapNode(int idx) {
+    // Checks the left child and right child and checks to see if they are smaller
+    // than the smallest
+    // if so, replace the smallest.
+    int left = this.leftChild(idx);
+    int right = this.rightChild(idx);
 
+    int smallest = idx;
+
+    if (left < this.size() && this.get(left).getID() < this.get(smallest).getID())
+      smallest = left;
+
+    if (right < this.size() && this.get(right).getID() < this.get(smallest).getID())
+      smallest = right;
+
+    if (smallest != idx) {
+      this.swap(idx, smallest);
+      this.heapNode(smallest);
+    }
+  }
+
+  private void swap(int idx1, int idx2) {
+    // Swaps two nodes
+    Student temp = this.get(idx1);
+    this.set(idx1, this.get(idx2));
+    this.set(idx2, temp);
+  }
+
+  public Student pop(int idx) {
+    // removes the desired value and returns the value
+    Student temp = this.get(idx);
+    this.remove(this.get(idx));
+    this.heapify();
+    return temp;
+  }
+
+  public Student pop() {
+    return pop(0);
+  }
+
+  public Student getStudentByID(int ID) {
+    return this.get(ID - 1);
   }
 
 }

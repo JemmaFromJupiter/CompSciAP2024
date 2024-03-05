@@ -1,47 +1,59 @@
 import java.util.regex.Pattern;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Student {
-  private Pattern dobPattern = Pattern.compile("^(0[1-9]|[12][0-9]|3[0-1])/(0[1-9]|[1][0-2])/(\\d{4})$");
+  private Pattern dobPattern = Pattern.compile("^(0[1-9]|1[1-9]|[12][0-9]|3[0-1])/(0[1-9]|1[0-2])/(\\d{4})$");
 
   private int ID;
-  private String LegalName;
-  private String PreferredName;
+  private String FirstName;
+  private String LastName;
+  private String PreferredFirstName;
+  private String PreferredLastName;
+  private String Email;
   private String Gender;
   private String Pronouns;
   private String DoB;
   private ArrayList<RegisteredCourse> RegisteredCourses;
+  // private ArrayList<String> EmergencyContacts;
 
-  public Student(int ID, String LegalName, String PreferredName, String Gender, String Pronouns, String DoB) {
+  public Student(int ID, String FirstName, String LastName, String PreferredFirstName, String PreferredLastName,
+      String Gender, String Pronouns, String Email, String DoB) {
     this.setID(ID);
-    this.setLegalName(LegalName);
-    this.setPreferredName(PreferredName);
+    this.setFirstName(FirstName);
+    this.setLastName(LastName);
+    this.setPreferredFirstName(PreferredFirstName);
+    this.setPreferredLastName(PreferredLastName);
     this.setGender(Gender);
     this.setPronouns(Pronouns);
+    this.setEmail(Email);
     this.setDoB(DoB);
+    this.RegisteredCourses = new ArrayList<>();
   }
 
   class RegisteredCourse {
+    private String CourseID;
     private String CourseName;
-    private Map<String, Double> CourseOutcomes;
     private Double TotalGrade;
 
-    public RegisteredCourse(String CourseName) {
+    public RegisteredCourse(String CourseID, String CourseName) {
+      this.CourseID = CourseID;
       this.CourseName = CourseName;
-      this.CourseOutcomes = new HashMap<>();
       this.TotalGrade = 0.0;
     }
 
-    public RegisteredCourse(String CourseName, String[] CourseOutcomes) {
+    public RegisteredCourse(String CourseID, String CourseName, Double CourseGrade) {
+      this.CourseID = CourseID;
       this.CourseName = CourseName;
-      this.CourseOutcomes = new HashMap<>();
-      for (String s : CourseOutcomes) {
-        this.addOutcome(s);
-      }
-      this.TotalGrade = 0.0;
+      this.TotalGrade = CourseGrade;
+    }
+
+    public String getCourseID() {
+      return this.CourseID;
+    }
+
+    public void setCourseID(String newCourseID) {
+      this.CourseID = newCourseID;
     }
 
     // Course Name Setters and Getters
@@ -53,41 +65,19 @@ public class Student {
       this.CourseName = newName;
     }
 
-    // Course Outcomes Functions
-    public Map<String, Double> getOutcomes() {
-      return this.CourseOutcomes;
-    }
-
-    public Double getOutcomeGrade(String OutcomeName) {
-      return this.CourseOutcomes.get(OutcomeName);
-    }
-
-    public void addOutcome(String OutcomeName) {
-      this.CourseOutcomes.put(OutcomeName, 0.0);
-    }
-
-    public void updateOutcomeGrade(String OutcomeName, Double Grade) {
-      this.CourseOutcomes.replace(OutcomeName, Grade);
-      this.calculateGradeAverage();
-    }
-
     // Total Grade Utils
     public Double getTotalGrade() {
       return this.TotalGrade;
     }
 
     public void setTotalGrade(Double newGrade) {
-      this.calculateGradeAverage();
+      this.TotalGrade = newGrade;
     }
 
-    private void calculateGradeAverage() {
-      Double sum = 0.0;
-      int size = this.CourseOutcomes.size();
-      for (Double grade : this.CourseOutcomes.values()) {
-        sum += grade;
-      }
-      this.TotalGrade = sum / size;
+    public String toString() {
+      return String.format("%n\t\t[%s, %s, %.2f]", this.CourseID, this.CourseName, this.TotalGrade);
     }
+
   }
 
   // ID Getter and Setter
@@ -95,29 +85,49 @@ public class Student {
     return this.ID;
   }
 
-  public void setID(int newID) {
+  private void setID(int newID) {
     this.ID = newID;
   }
 
   // Name Getters and Setters
-  public String getLegalName() {
-    return this.LegalName;
+  public String getFirstName() {
+    return this.FirstName;
   }
 
-  public String getPreferredName() {
-    return this.PreferredName;
+  public String getLastName() {
+    return this.LastName;
   }
 
-  public void setLegalName(String newLegalName) {
-    this.LegalName = newLegalName;
+  public String getPreferredFirstName() {
+    return this.PreferredFirstName;
   }
 
-  public void setPreferredName(String newPreferredName) {
-    this.PreferredName = newPreferredName;
+  public String getPreferredLastName() {
+    return this.PreferredLastName;
   }
 
-  public void setPreferredName() {
-    setPreferredName("");
+  public void setFirstName(String newFirstName) {
+    this.FirstName = newFirstName;
+  }
+
+  public void setLastName(String newLastName) {
+    this.LastName = newLastName;
+  }
+
+  public void setPreferredFirstName(String newPreferredFirstName) {
+    this.PreferredFirstName = newPreferredFirstName;
+  }
+
+  public void setPreferredLastName(String newLastName) {
+    this.PreferredLastName = newLastName;
+  }
+
+  public String getEmail() {
+    return this.Email;
+  }
+
+  public void setEmail(String newEmail) {
+    this.Email = newEmail;
   }
 
   // Gender
@@ -156,15 +166,26 @@ public class Student {
     return this.RegisteredCourses;
   }
 
-  public void addRegisteredCourse(String CourseName, String[] CourseOutcomes) {
-    this.RegisteredCourses.add(new RegisteredCourse(CourseName, CourseOutcomes));
+  public void addRegisteredCourse(String CourseID, String CourseName) {
+    this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName));
   }
 
-  public void removeRegisteredCourse(String CourseName) {
+  public void addRegisteredCourse(String CourseID, String CourseName, Double CourseGrade) {
+    this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName, CourseGrade));
+  }
+
+  public void removeRegisteredCourse(String CourseID) {
     for (RegisteredCourse rc : this.RegisteredCourses) {
-      if (rc.getCourseName() == CourseName) {
+      if (rc.getCourseName() == CourseID) {
         this.RegisteredCourses.remove(rc);
       }
     }
+  }
+
+  public String toString() {
+    return String.format("%n\t[%d, %s, %s, %s, %s, %s, %s, %s, %s, %s]", this.getID(), this.getFirstName(),
+        this.getLastName(),
+        this.getPreferredFirstName(), this.getPreferredLastName(),
+        this.getGender(), this.getPronouns(), this.getEmail(), this.getDoB(), this.getRegisteredCourses());
   }
 }

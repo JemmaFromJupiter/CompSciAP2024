@@ -1,0 +1,4 @@
+javac RuntimeDatabase.java StorageHandler.java Student.java
+
+
+SELECT s.*, rc.* FROM student_database.students s LEFT JOIN registered_courses rc ON s.STUDENT_ID = rc.STUDENT_ID
