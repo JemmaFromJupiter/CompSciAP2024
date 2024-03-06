@@ -1,0 +1,166 @@
+-- Add 5 students to the students table
+INSERT INTO students(
+    FIRST_NAME,
+    LAST_NAME,
+    PREF_FIRST_NAME,
+    PREF_LAST_NAME,
+    GENDER,
+    PRONOUNS,
+    EMAIL,
+    DOB,
+    SYSTEM_PASSWORD
+)
+VALUES(
+    'John',
+    'Doe',
+    'John',
+    NULL,
+    'Male',
+    'He/Him',
+    'john.doe@example.com',
+    '01/01/1995',
+    'password1'
+),(
+    'Jane',
+    'Smith',
+    'Jane',
+    NULL,
+    'Female',
+    'She/Her',
+    'jane.smith@example.com',
+    '01/01/1995',
+    'password2'
+),(
+    'Alice',
+    'Johnson',
+    'Alice',
+    NULL,
+    'Female',
+    'She/Her',
+    'alice.johnson@example.com',
+    '01/01/1995',
+    'password3'
+),(
+    'Bob',
+    'Brown',
+    'Bob',
+    NULL,
+    'Male',
+    'He/Him',
+    'bob.brown@example.com',
+    '01/01/1995',
+    'password4'
+),(
+    'Emily',
+    'Davis',
+    'Emily',
+    NULL,
+    'Female',
+    'She/Her',
+    'emily.davis@example.com',
+    '01/01/1995',
+    'password5'
+);
+-- Add 20 registered courses (4 for each student)
+INSERT INTO registered_courses(
+    STUDENT_ID,
+    COURSE_ID,
+    COURSE_NAME,
+    COURSE_GRADE
+)
+VALUES(1, 'MATH101', 'Mathematics', 95),(1, 'ENG101', 'English', 88),(1, 'SCI101', 'Science', 92),(1, 'HIST101', 'History', 85),(2, 'CS101', 'Computer Science', 90),(2, 'ART101', 'Art', 82),(2, 'PHY101', 'Physics', 88),(2, 'CHEM101', 'Chemistry', 87),(3, 'BIO101', 'Biology', 91),(3, 'GEOG101', 'Geography', 84),(3, 'MUS101', 'Music', 89),(
+    3,
+    'PE101',
+    'Physical Education',
+    90
+),(4, 'ECON101', 'Economics', 86),(4, 'PSYCH101', 'Psychology', 88),(4, 'SOC101', 'Sociology', 85),(4, 'FL101', 'Foreign Language', 90),(5, 'LIT101', 'Literature', 89),(5, 'DRAMA101', 'Drama', 85),(
+    5,
+    'HEALTH101',
+    'Health Education',
+    92
+),(
+    5,
+    'ENVSCI101',
+    'Environmental Science',
+    87
+);
+-- Add 10 emergency contacts (2 per student)
+INSERT INTO emergency_contacts(
+    STUDENT_ID,
+    CONTACT_ID,
+    CONTACT_NAME,
+    CONTACT_HOME,
+    CONTACT_CELL,
+    CONTACT_EMAIL
+)
+VALUES(
+    1,
+    '1',
+    'Mary Doe',
+    '123-456-7890',
+    '234-567-8901',
+    'mary.doe@example.com'
+),(
+    1,
+    '2',
+    'James Doe',
+    '111-222-3333',
+    '444-555-6666',
+    'james.doe@example.com'
+),(
+    2,
+    '3',
+    'Sarah Smith',
+    '333-444-5555',
+    '555-666-7777',
+    'sarah.smith@example.com'
+),(
+    2,
+    '4',
+    'Michael Smith',
+    '222-333-4444',
+    '777-888-9999',
+    'michael.smith@example.com'
+),(
+    3,
+    '5',
+    'Susan Johnson',
+    '777-888-9999',
+    '888-999-0000',
+    'susan.johnson@example.com'
+),(
+    3,
+    '6',
+    'David Johnson',
+    '444-555-6666',
+    '999-000-1111',
+    'david.johnson@example.com'
+),(
+    4,
+    '7',
+    'Alice Brown',
+    '555-666-7777',
+    '666-777-8888',
+    'alice.brown@example.com'
+),(
+    4,
+    '8',
+    'Tom Brown',
+    '666-777-8888',
+    '111-222-3333',
+    'tom.brown@example.com'
+),(
+    5,
+    '9',
+    'Jessica Davis',
+    '777-888-9999',
+    '222-333-4444',
+    'jessica.davis@example.com'
+),(
+    5,
+    '10',
+    'Chris Davis',
+    '333-444-5555',
+    '444-555-6666',
+    'chris.davis@example.com'
+);

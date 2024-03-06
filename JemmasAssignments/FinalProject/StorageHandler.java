@@ -37,6 +37,7 @@ public class StorageHandler {
     RuntimeDatabase newdb = new RuntimeDatabase();
     int currentStudentID = -1;
     while (this.resultSet.next()) {
+      // System.out.println(newdb);
       // Gets all the necessary information from the database
       int StudentID = this.resultSet.getInt("STUDENT_ID");
       String FirstName = this.resultSet.getString("FIRST_NAME");
@@ -52,12 +53,24 @@ public class StorageHandler {
       String CourseName = this.resultSet.getString("COURSE_NAME");
       Double CourseGrade = this.resultSet.getDouble("COURSE_GRADE");
 
+      String ContactID = this.resultSet.getString("CONTACT_ID");
+      String ContactName = this.resultSet.getString("CONTACT_NAME");
+      String ContactHome = this.resultSet.getString("CONTACT_HOME");
+      String ContactCell = this.resultSet.getString("CONTACT_CELL");
+      String ContactEmail = this.resultSet.getString("CONTACT_EMAIL");
+
       // Appends the information to the runtime database.
       if (StudentID != currentStudentID) {
         newdb.append(StudentID, FirstName, LastName, PrefFirst, PrefLast, Gender, Pronouns, Email, DoB);
         currentStudentID = StudentID;
       }
-      newdb.getStudentByID(StudentID).addRegisteredCourse(CourseID, CourseName, CourseGrade);
+
+      if (!newdb.getStudentByID(StudentID).courseRegistered(CourseID))
+        newdb.getStudentByID(StudentID).addRegisteredCourse(CourseID, CourseName, CourseGrade);
+
+      if (!newdb.getStudentByID(StudentID).emergencyContactRegistered(ContactID))
+        newdb.getStudentByID(StudentID).addEmergencyContact(ContactID, ContactName, ContactHome, ContactCell,
+            ContactEmail);
     }
     return newdb;
   }

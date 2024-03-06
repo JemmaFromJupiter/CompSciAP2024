@@ -1,4 +1,5 @@
 javac RuntimeDatabase.java StorageHandler.java Student.java
 
+SELECT s.*, rc.*, ec.* FROM students s INNER JOIN registered_courses rc ON s.STUDENT_ID = rc.STUDENT_ID INNER JOIN emergency_contacts ec ON s.STUDENT_ID = ec.STUDENT_ID;
 
-SELECT s.*, rc.* FROM student_database.students s LEFT JOIN registered_courses rc ON s.STUDENT_ID = rc.STUDENT_ID
+SELECT s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, s.PREF_FIRST_NAME, s.PREF_LAST_NAME, s.GENDER, s.PRONOUNS, s.EMAIL, s.DOB, rc.COURSE_ID, rc.COURSE_NAME, rc.COURSE_GRADE, ec.CONTACT_ID, ec.CONTACT_NAME, ec.CONTACT_HOME, ec.CONTACT_CELL, ec.CONTACT_EMAIL FROM students s INNER JOIN registered_courses rc ON s.STUDENT_ID = rc.STUDENT_ID INNER JOIN emergency_contacts ec ON s.STUDENT_ID = ec.STUDENT_ID GROUP BY s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, s.PREF_FIRST_NAME, s.PREF_LAST_NAME, s.GENDER, s.PRONOUNS, s.EMAIL, s.DOB, rc.COURSE_ID, rc.COURSE_NAME, rc.COURSE_GRADE, ec.CONTACT_ID, ec.CONTACT_NAME, ec.CONTACT_HOME, ec.CONTACT_CELL, ec.CONTACT_EMAIL;
