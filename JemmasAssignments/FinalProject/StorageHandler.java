@@ -65,13 +65,17 @@ public class StorageHandler {
         currentStudentID = StudentID;
       }
 
-      if (!newdb.getStudentByID(StudentID).courseRegistered(CourseID))
+      if (CourseID != null && !newdb.getStudentByID(StudentID).courseRegistered(CourseID))
         newdb.getStudentByID(StudentID).addRegisteredCourse(CourseID, CourseName, CourseGrade);
 
-      if (!newdb.getStudentByID(StudentID).emergencyContactRegistered(ContactID))
+      if (ContactID != null && !newdb.getStudentByID(StudentID).emergencyContactRegistered(ContactID))
         newdb.getStudentByID(StudentID).addEmergencyContact(ContactID, ContactName, ContactHome, ContactCell,
             ContactEmail);
     }
     return newdb;
+  }
+
+  public ResultSet getResultSet() {
+    return this.resultSet;
   }
 }

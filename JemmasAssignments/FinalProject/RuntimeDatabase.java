@@ -85,4 +85,14 @@ public class RuntimeDatabase extends ArrayList<Student> {
     return this.get(ID - 1);
   }
 
+  public Object[][] asArray() {
+    Object[][] studentArray = new Object[this.size()][6];
+    int i = 0;
+    for (Student s : this) {
+      studentArray[i] = s.asArray();
+      i++;
+    }
+    return studentArray;
+  }
+
 }

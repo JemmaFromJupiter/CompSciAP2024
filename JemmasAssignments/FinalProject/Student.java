@@ -284,6 +284,12 @@ public class Student {
     return false;
   }
 
+  public Object[] asArray() {
+    return new Object[] { Integer.toString(this.getID()), this.getFirstName() + " " + this.getLastName(),
+        this.getPreferredFirstName() + " " + this.getPreferredLastName(), this.getGender(), this.getPronouns(),
+        this.getDoB() };
+  }
+
   public String toString() {
     return String.format("[%d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]", this.getID(), this.getFirstName(),
         this.getLastName(),

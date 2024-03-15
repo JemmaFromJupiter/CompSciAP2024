@@ -4,6 +4,8 @@ public class Main {
   static int[] ls = { 5, 6, 11, 8, 10, 3 };
   static int[] sls = { 2, 5, 7, 9, 10, 13, 17, 18, 27, 36 };
 
+  static int[] lis = new int[255];
+
   public static void main(String[] args) {
     System.out.println(linearSearch(ls, 8));
     System.out.println(binarySearch(sls, 7));
@@ -35,4 +37,3 @@ public class Main {
   }
 
 }
-
