@@ -15,5 +15,6 @@
 	<classpathentry kind="src" path="JemmasAssignments/Module4/Assignment1"/>
 	<classpathentry kind="src" path="JemmasAssignments/Module4/Assignment2"/>
 	<classpathentry kind="src" path="JemmasAssignments/Module4/Assignment3"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
