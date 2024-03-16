@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="BinaryTree/" kind="src" path=".Tests"/>
+	<classpathentry kind="src" path="JemmasAssignments/FinalProject"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module1/Assignment1"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module1/Assignment2"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module1/Assignment3"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module2/Assignment1"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module2/Assignment2"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module2/Assignment3"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module3/Assignment1"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module3/Assignment2"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module3/Assignment3"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module4/Assignment1"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module4/Assignment2"/>
+	<classpathentry kind="src" path="JemmasAssignments/Module4/Assignment3"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
