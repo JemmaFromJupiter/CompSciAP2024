@@ -1,0 +1,30 @@
+CREATE TABLE `students` (
+  `STUDENT_ID` varchar(255) NOT NULL,
+  `LEGAL_NAME` varchar(255) DEFAULT NULL,
+  `PREFERRED_NAME` varchar(255) DEFAULT NULL,
+  `EMAIL` varchar(255) DEFAULT NULL,
+  `GENDER` varchar(255) DEFAULT NULL,
+  `PRONOUNS` varchar(255) DEFAULT NULL,
+  `DOB` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`STUDENT_ID`)
+);
+
+CREATE TABLE `registered_courses` (
+  `STUDENT_ID` varchar(255) NOT NULL,
+  `COURSE_ID` varchar(50) NOT NULL,
+  `COURSE_NAME` varchar(50) NOT NULL,
+  `COURSE_GRADE` double DEFAULT NULL,
+  KEY `STUDENT_ID` (`STUDENT_ID`),
+  CONSTRAINT `registered_courses_ibfk_1` FOREIGN KEY (`STUDENT_ID`) REFERENCES `students` (`STUDENT_ID`)
+);
+
+CREATE TABLE `emergency_contacts` (
+  `STUDENT_ID` varchar(255) NOT NULL,
+  `CONTACT_ID` varchar(255) NOT NULL,
+  `CONTACT_NAME` varchar(255) NOT NULL,
+  `CONTACT_CELL` varchar(255) DEFAULT NULL,
+  `CONTACT_HOME` varchar(255) DEFAULT NULL,
+  `CONTACT_EMAIL` varchar(255) DEFAULT NULL,
+  KEY `STUDENT_ID` (`STUDENT_ID`),
+  CONSTRAINT `emergency_contacts_ibfk_1` FOREIGN KEY (`STUDENT_ID`) REFERENCES `students` (`STUDENT_ID`)
+);

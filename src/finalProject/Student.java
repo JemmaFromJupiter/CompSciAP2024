@@ -7,11 +7,9 @@ import java.util.ArrayList;
 public class Student {
   private Pattern dobPattern = Pattern.compile("^(0[1-9]|1[1-9]|[12][0-9]|3[0-1])/(0[1-9]|1[0-2])/(\\d{4})$");
 
-  private int ID;
-  private String FirstName;
-  private String LastName;
-  private String PreferredFirstName;
-  private String PreferredLastName;
+  private String ID;
+  private String LegalName;
+  private String PreferredName;
   private String Email;
   private String Gender;
   private String Pronouns;
@@ -19,13 +17,11 @@ public class Student {
   private ArrayList<RegisteredCourse> RegisteredCourses;
   private ArrayList<EmergencyContact> EmergencyContacts;
 
-  public Student(int ID, String FirstName, String LastName, String PreferredFirstName, String PreferredLastName,
+  public Student(String ID, String LegalName, String PreferredName,
       String Gender, String Pronouns, String Email, String DoB) {
     this.setID(ID);
-    this.setFirstName(FirstName);
-    this.setLastName(LastName);
-    this.setPreferredFirstName(PreferredFirstName);
-    this.setPreferredLastName(PreferredLastName);
+    this.setLegalName(LegalName);
+    this.setPreferredName(PreferredName);
     this.setGender(Gender);
     this.setPronouns(Pronouns);
     this.setEmail(Email);
@@ -90,6 +86,10 @@ public class Student {
     public void setContactEmail(String newEmail) {
       this.ContactEmail = newEmail;
     }
+    
+    public String[] asArray() {
+    	return new String[] {this.getContactID(), this.getContactName(), this.getContactCell(), this.getContactHome(), this.getContactEmail()};
+    }
 
     public String toString() {
       return String.format("Emergency Contact: [%s, %s, %s, %s]", this.getContactName(), this.getContactHome(),
@@ -139,6 +139,10 @@ public class Student {
     public void setTotalGrade(Double newGrade) {
       this.TotalGrade = newGrade;
     }
+    
+    public String[] asArray() {
+    	return new String[] {this.getCourseID(), this.getCourseName(), Double.toString(this.getTotalGrade())};
+    }
 
     public String toString() {
       return String.format("Registered Course: [%s, %s, %.2f]", this.getCourseID(), this.getCourseID(),
@@ -148,45 +152,32 @@ public class Student {
   }
 
   // ID Getter and Setter
-  public int getID() {
+  public String getID() {
     return this.ID;
   }
 
-  private void setID(int newID) {
+  private void setID(String newID) {
     this.ID = newID;
   }
 
   // Name Getters and Setters
-  public String getFirstName() {
-    return this.FirstName;
+  public String getLegalName() {
+	  return this.LegalName;
   }
 
-  public String getLastName() {
-    return this.LastName;
+  public String getPreferredName() {
+	  if (this.PreferredName != null)
+		  return this.PreferredName;
+	  else
+		  return "None";
   }
 
-  public String getPreferredFirstName() {
-    return this.PreferredFirstName;
+  public void setLegalName(String newLegalName) {
+    this.LegalName = newLegalName;
   }
 
-  public String getPreferredLastName() {
-    return this.PreferredLastName;
-  }
-
-  public void setFirstName(String newFirstName) {
-    this.FirstName = newFirstName;
-  }
-
-  public void setLastName(String newLastName) {
-    this.LastName = newLastName;
-  }
-
-  public void setPreferredFirstName(String newPreferredFirstName) {
-    this.PreferredFirstName = newPreferredFirstName;
-  }
-
-  public void setPreferredLastName(String newLastName) {
-    this.PreferredLastName = newLastName;
+  public void setPreferredName(String newPreferredName) {
+    this.PreferredName = newPreferredName;
   }
 
   public String getEmail() {
@@ -229,8 +220,16 @@ public class Student {
 
   // Courses
 
-  public ArrayList<RegisteredCourse> getRegisteredCourses() {
-    return this.RegisteredCourses;
+  public String[][] getRegisteredCourses() {
+	String[][] registeredCourses = new String[this.RegisteredCourses.size()][3];
+	
+	int i = 0;
+	for (RegisteredCourse rc : this.RegisteredCourses) {
+		registeredCourses[i] = rc.asArray();
+		i++;
+	}
+	
+	return registeredCourses;
   }
 
   public void addRegisteredCourse(String CourseID, String CourseName) {
@@ -259,8 +258,16 @@ public class Student {
     return false;
   }
 
-  public ArrayList<EmergencyContact> getEmergencyContacts() {
-    return this.EmergencyContacts;
+  public String[][] getEmergencyContacts() {
+	  	String[][] contacts = new String[this.EmergencyContacts.size()][3];
+		
+		int i = 0;
+		for (EmergencyContact ec : this.EmergencyContacts) {
+				contacts[i] = ec.asArray();
+				i++;
+		}
+		
+		return contacts;
   }
 
   public void addEmergencyContact(String ContactID, String ContactName, String ContactHome, String ContactCell,
@@ -287,15 +294,13 @@ public class Student {
   }
 
   public Object[] asArray() {
-    return new Object[] { Integer.toString(this.getID()), this.getFirstName() + " " + this.getLastName(),
-        this.getPreferredFirstName() + " " + this.getPreferredLastName(), this.getGender(), this.getPronouns(),
-        this.getDoB() };
+    return new Object[] { this.getID(), this.getLegalName(),
+        this.getPreferredName(), this.getGender(), this.getDoB() };
   }
 
   public String toString() {
-    return String.format("[%d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]", this.getID(), this.getFirstName(),
-        this.getLastName(),
-        this.getPreferredFirstName(), this.getPreferredLastName(),
+    return String.format("[%s, %s, %s, %s, %s, %s, %s, %s, %s]", this.getID(), this.getLegalName(),
+        this.getPreferredName(),
         this.getGender(), this.getPronouns(), this.getEmail(), this.getDoB(), this.getRegisteredCourses(),
         this.getEmergencyContacts());
   }

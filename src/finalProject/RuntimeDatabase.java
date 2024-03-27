@@ -5,7 +5,12 @@ import java.util.Arrays;
 
 public class RuntimeDatabase extends ArrayList<Student> {
 
-  public RuntimeDatabase() {
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1;
+
+	public RuntimeDatabase() {
 
   }
 
@@ -26,15 +31,21 @@ public class RuntimeDatabase extends ArrayList<Student> {
     return (2 * N) + 2;
   }
 
-  public void append(int ID, String FirstName, String LastName, String PreferredFirstName, String PreferredLastName,
+  public void append(String ID, String LegalName, String PreferredName,
       String Gender, String Pronouns, String Email, String DoB) {
     // Do I really need to explain this?
     this.add(
-        new Student(ID, FirstName, LastName, PreferredFirstName, PreferredLastName, Gender, Pronouns,
+        new Student(ID, LegalName, PreferredName, Gender, Pronouns,
             Email,
             DoB));
     this.heapify();
   }
+  
+  public void append(Student student) {
+	    // Do I really need to explain this?
+	    this.add(student);
+	    this.heapify();
+	  }
 
   private void heapify() {
     // Literally just a for loop going backwards.
@@ -52,10 +63,10 @@ public class RuntimeDatabase extends ArrayList<Student> {
 
     int smallest = idx;
 
-    if (left < this.size() && this.get(left).getID() < this.get(smallest).getID())
+    if (left < this.size() && Integer.parseInt(this.get(left).getID()) < Integer.parseInt(this.get(smallest).getID()))
       smallest = left;
 
-    if (right < this.size() && this.get(right).getID() < this.get(smallest).getID())
+    if (right < this.size() && Integer.parseInt(this.get(right).getID()) < Integer.parseInt(this.get(smallest).getID()))
       smallest = right;
 
     if (smallest != idx) {
@@ -83,8 +94,13 @@ public class RuntimeDatabase extends ArrayList<Student> {
     return pop(0);
   }
 
-  public Student getStudentByID(int ID) {
-    return this.get(ID - 1);
+  public Student getStudentByID(String ID) {
+	for (Student s : this) {
+		if (s.getID() == ID) {
+			return s;
+		}
+	}
+	return null;
   }
 
   public Object[][] asArray() {

@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ImportantFiles/FinalProject/FinalProjectImages/pencil-svgrepo-com.png</name>
+			<type>1</type>
+			<location>C:/Users/stare/Downloads/pencil-svgrepo-com.png</location>
+		</link>
+		<link>
+			<name>ImportantFiles/FinalProject/FinalProjectImages/pencil-svgrepo-com.svg</name>
+			<type>1</type>
+			<location>C:/Users/stare/Downloads/pencil-svgrepo-com.svg</location>
+		</link>
+	</linkedResources>
 </projectDescription>
