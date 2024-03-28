@@ -14,7 +14,7 @@ public class Application extends JFrame {
 	private final int isFocused = JComponent.WHEN_FOCUSED;
 	private final int inFocusedWindow = JComponent.WHEN_IN_FOCUSED_WINDOW;
 	
-	// KeyStrokes for key bindings.
+	// Keyboard actions using KeyStrokes. Used to create key bindings for specific application functions.
 	private KeyStroke ctrlA = KeyStroke.getKeyStroke("control A");
 	private final String ADD = "student+";
 	
@@ -22,13 +22,13 @@ public class Application extends JFrame {
 	private KeyStroke bksp = KeyStroke.getKeyStroke("BACK_SPACE");
 	private final String REMOVE = "student-";
 	
-	private KeyStroke ctrlV = KeyStroke.getKeyStroke("control V");
-	private final String VIEW = "view";
+	private KeyStroke ctrlR = KeyStroke.getKeyStroke("control R");
+	private final String REFRESH = "rfsh";
 	
 	private KeyStroke ctrlQ = KeyStroke.getKeyStroke("control Q");
 	private final String QUIT = "quit";
 	
-	// Rest of setup
+	// Defines the used storage handler and other variables that are assigned a value later in the code.
 	private StorageHandler shdl = new StorageHandler();
 	private RuntimeDatabase rdb;
 
@@ -66,47 +66,30 @@ public class Application extends JFrame {
 		menuBar.setMargin(new Insets(0, 0, 0, 50));
 		setJMenuBar(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("Actions");
-		menuBar.add(mnNewMenu);
+		JMenu mnActions = new JMenu("Actions");
+		menuBar.add(mnActions);
 		
-		JMenuItem mntmAddStudent = new JMenuItem(String.format("Add Student%50s", "Ctrl+A"));
-		mntmAddStudent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new AddStudentAction().actionPerformed(null);
-			}
-		});
-		mnNewMenu.add(mntmAddStudent);
+		JMenuItem mntmAddStudent = new JMenuItem(String.format("Add Student%50s", "CTRL+A"));
+		mntmAddStudent.addActionListener(new AddStudentAction());
+		mnActions.add(mntmAddStudent);
 		
-		JMenuItem mntmRemoveStudent = new JMenuItem(String.format("Remove Student%45s", "Del or Back"));
-		mntmRemoveStudent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new RemoveStudentAction().actionPerformed(null);
-			}
-		});
-		mnNewMenu.add(mntmRemoveStudent);
+		JMenuItem mntmRemoveStudent = new JMenuItem(String.format("Remove Student%40s", "DEL"));
+		mntmRemoveStudent.addActionListener(new RemoveStudentAction());
+		mnActions.add(mntmRemoveStudent);
 		
-		JMenuItem mntmViewStudent = new JMenuItem(String.format("View Student%49s", "Ctrl+V"));
-		mntmViewStudent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new ViewStudentAction().actionPerformed(null);
-			}
-		});
+		JMenuItem mntmRefresh = new JMenuItem(String.format("Refresh%58s", "CTRL+R"));
+		mntmRefresh.addActionListener(new RefreshTableAction());
+		mnActions.add(mntmRefresh);
 		
-		mnNewMenu.add(mntmViewStudent);
+		JMenuItem mntmExit = new JMenuItem(String.format("Exit%65s", "CTRL+Q"));
+		mntmExit.addActionListener(new QuitAction());
+		mnActions.add(mntmExit);
 		
-		JMenuItem mntmExit = new JMenuItem(String.format("Exit%65s", "Ctrl+Q"));
-		mntmExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new QuitAction().actionPerformed(null);
-			}
-		});
-		mnNewMenu.add(mntmExit);
-		
-		JMenu mnNewMenu_1 = new JMenu("Help");
-		menuBar.add(mnNewMenu_1);
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
-		mnNewMenu_1.add(mntmAbout);
+		mnHelp.add(mntmAbout);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -124,7 +107,7 @@ public class Application extends JFrame {
 		studentTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+				if (e.getClickCount() == 2 && studentTable.getSelectedRow() >= 0) {
 					new ViewStudentAction().actionPerformed(null);
 				}
 			}
@@ -161,17 +144,22 @@ public class Application extends JFrame {
 		studentTable.getInputMap(isFocused).put(bksp, REMOVE); // If delete key is NOT present on users keyboard.
 		studentTable.getActionMap().put(REMOVE, new RemoveStudentAction());
 		
-		studentTable.getInputMap(isFocused).put(ctrlV, VIEW);
-		studentTable.getActionMap().put(VIEW, new ViewStudentAction());
+		studentTable.getInputMap(isFocused).put(ctrlR, REFRESH);
+		studentTable.getActionMap().put(REFRESH, new RefreshTableAction());;
 		
 		this.getRootPane().getInputMap(inFocusedWindow).put(ctrlQ, QUIT);
 		this.getRootPane().getActionMap().put(QUIT, new QuitAction());
 	}
 	
+	private class RefreshTableAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			studentTableModel.setDataVector(rdb.asArray(), columnNames);
+		}
+	}
+	
 	private class AddStudentAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(e);
-			AddStudent addStudentWindow = new AddStudent(shdl, rdb, studentTableModel);
+			AddStudent addStudentWindow = new AddStudent(shdl, rdb);
 			addStudentWindow.setVisible(true);
 		}
 	}
@@ -195,8 +183,8 @@ public class Application extends JFrame {
 			try {
 				String studentID = (String) studentTable.getValueAt(row, col);
 				shdl.deleteFromDatabase(studentID);
-				studentTableModel.removeRow(row);
 				rdb.pop(row);
+				new RefreshTableAction().actionPerformed(null);
 			} catch (Exception e2) {
 				System.out.println("An Error Occurred.");
 				e2.printStackTrace();
@@ -212,7 +200,7 @@ public class Application extends JFrame {
 				System.out.println("There is no student selected.");
 				return;
 			}
-			ViewStudent viewStudentWindow = new ViewStudent(rdb.getStudentByID((String) studentTable.getValueAt(row, col)), shdl, rdb);
+			ViewStudent viewStudentWindow = new ViewStudent(rdb.getStudentByID((String) studentTable.getValueAt(row, col)), shdl);
 			viewStudentWindow.setVisible(true);
 		}
 	}

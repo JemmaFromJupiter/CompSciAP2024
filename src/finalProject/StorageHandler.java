@@ -28,12 +28,6 @@ public class StorageHandler {
     this.preparedStatement = connection.prepareStatement(RuntimeQuery);
     this.resultSet = this.preparedStatement.executeQuery();
   }
-
-  public void updateDatabase(String RuntimeUpdate) throws SQLException {
-    // creates an SQL Update and sends it to the server
-    this.preparedStatement = this.connection.prepareStatement(RuntimeUpdate);
-    this.preparedStatement.executeUpdate();
-  }
   
   public void addStudentToDatabase(Student s) throws SQLException {
 	  String sql = "INSERT INTO students (STUDENT_ID, LEGAL_NAME, PREFERRED_NAME, GENDER, PRONOUNS, EMAIL, DOB)" +
@@ -50,15 +44,62 @@ public class StorageHandler {
 	  }
   }
   
-  public void addRegisteredCourseToDatabase(String ID, String courseID, String courseName) throws SQLException {
-	  String sql = "INSERT INTO registered_courses (STUDENT_ID, COURSE_ID, COURSE_NAME)" +
-	  "VALUES (?, ?, ?)";
+  public void addRegisteredCourseToDatabase(String ID, Student.RegisteredCourse rc) throws SQLException {
+	  String sql = "INSERT INTO registered_courses (STUDENT_ID, COURSE_ID, COURSE_NAME, COURSE_GRADE)" +
+	  "VALUES (?, ?, ?, ?)";
 	  try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 		  preparedStatement.setString(1, ID);
-		  preparedStatement.setString(2, courseID);
-		  preparedStatement.setString(3, courseName);
+		  preparedStatement.setString(2, rc.getCourseID());
+		  preparedStatement.setString(3, rc.getCourseName());
+		  preparedStatement.setDouble(4, 0.0);
 		  preparedStatement.execute();
 	  }
+  }
+  
+  public void addEmergencyContactToDatabase(String ID, Student.EmergencyContact ec) throws SQLException {
+	  String sql = "INSERT INTO emergency_contacts (STUDENT_ID, CONTACT_ID, CONTACT_NAME, CONTACT_HOME, CONTACT_CELL, CONTACT_EMAIL)" +
+	  "VALUES (?, ?, ?, ?, ?, ?)";
+	  try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+		  preparedStatement.setString(1, ID);
+		  preparedStatement.setString(2, ec.getContactID());
+		  preparedStatement.setString(3, ec.getContactName());
+		  preparedStatement.setString(4, ec.getContactHome());
+		  preparedStatement.setString(5, ec.getContactCell());
+		  preparedStatement.setString(6, ec.getContactEmail());
+		  preparedStatement.execute();
+	  }
+  }
+  
+  public void updateStudentInfo(Student s) throws SQLException {
+	  String sql = "UPDATE students " +
+			  "SET LEGAL_NAME=?, PREFERRED_NAME=?, EMAIL=?, GENDER=?, PRONOUNS=? " +
+			  "WHERE STUDENT_ID=?;";
+	  try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+		  preparedStatement.setString(1, s.getLegalName());
+		  preparedStatement.setString(2, s.getPreferredName());
+		  preparedStatement.setString(3, s.getEmail());
+		  preparedStatement.setString(4, s.getGender());
+		  preparedStatement.setString(5, s.getPronouns());
+		  preparedStatement.setString(6, s.getID());
+		  preparedStatement.executeUpdate();
+	  }
+  }
+  
+  public void updateRegisteredCourseInfo(String studentID, Student.RegisteredCourse rc) throws SQLException {
+	  String sql = "UPDATE registered_courses " +
+			  "SET COURSE_GRADE=?" +
+			  "WHERE STUDENT_ID=? AND COURSE_ID=?;";
+	  
+	  try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+		  preparedStatement.setDouble(1, rc.getTotalGrade());
+		  preparedStatement.setString(2, studentID);
+		  preparedStatement.setString(3, rc.getCourseID());
+		  preparedStatement.executeUpdate();
+	  }
+  }
+  
+  public void updateEmergencyContactInfo(String studentID, Student.EmergencyContact ec) throws SQLException {
+	  
   }
   
   public void deleteFromDatabase(String ID)throws SQLException {
@@ -87,6 +128,14 @@ public class StorageHandler {
 	  String sql = "DELETE FROM emergency_contacts WHERE STUDENT_ID=?;";
 	  try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
 		  preparedStatement.setString(1, studentID);
+		  preparedStatement.executeUpdate();
+	  }
+  }
+  
+  public void deleteContactFromEmergencyContacts(String contactID) throws SQLException {
+	  String sql = "DELETE FROM emergency_contacts WHERE CONTACT_ID=?;";
+	  try (PreparedStatement preparedStatement = this.connection.prepareStatement(sql)) {
+		  preparedStatement.setString(1, contactID);
 		  preparedStatement.executeUpdate();
 	  }
   }

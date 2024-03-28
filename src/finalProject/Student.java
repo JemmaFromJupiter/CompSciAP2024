@@ -151,6 +151,15 @@ public class Student {
 
   }
 
+  // setter for all editable values after they've been stored.
+  public void setAllEditable(String email, String legalName, String preferredName, String gender, String pronouns) {
+	  setEmail(email);
+	  setLegalName(legalName);
+	  setPreferredName(preferredName);
+	  setGender(gender);
+	  setPronouns(pronouns);
+  }
+  
   // ID Getter and Setter
   public String getID() {
     return this.ID;
@@ -231,6 +240,14 @@ public class Student {
 	
 	return registeredCourses;
   }
+  
+  public RegisteredCourse getRegisteredCourseByID(String courseID) {
+	  for (RegisteredCourse rc : RegisteredCourses) {
+		  if (rc.getCourseID() == courseID)
+			  return rc;
+	  }
+	  return null;
+  }
 
   public void addRegisteredCourse(String CourseID, String CourseName) {
     this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName));
@@ -248,10 +265,18 @@ public class Student {
       }
     }
   }
+  
+  public void updateCourseGrade(String courseID, Double grade) {
+	  RegisteredCourse rc;
+	  if (!courseRegistered(courseID))
+		  return;
+	  
+	  rc = getRegisteredCourseByID(courseID);
+	  rc.setTotalGrade(grade);
+  }
 
   public boolean courseRegistered(String CourseID) {
     for (RegisteredCourse rc : this.RegisteredCourses) {
-      // System.out.println(rc.getCourseID() == CourseID);
       if (rc.getCourseID().equals(CourseID))
         return true;
     }
@@ -268,6 +293,14 @@ public class Student {
 		}
 		
 		return contacts;
+  }
+  
+  public EmergencyContact getEmergencyContactByID(String contactID) {
+	  for (EmergencyContact ec : EmergencyContacts) {
+		  if (ec.getContactID() == contactID)
+			  return ec;
+	  }
+	  return null;
   }
 
   public void addEmergencyContact(String ContactID, String ContactName, String ContactHome, String ContactCell,

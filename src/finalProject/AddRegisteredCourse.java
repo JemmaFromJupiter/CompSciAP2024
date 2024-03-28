@@ -4,44 +4,51 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.table.*;
 // import java.util.*;
 
 import net.miginfocom.swing.MigLayout;
 
 public class AddRegisteredCourse extends JFrame {
 	
-	private String studentID;
+	private Student student;
 	private StorageHandler shdl;
 	private RuntimeDatabase rdb;
-	private DefaultTableModel dtm;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField courseID;
 	private JTextField courseName;
+	private JLabel status;
 
 	/**
 	 * Create the frame.
 	 */
-	public AddRegisteredCourse(String ID, StorageHandler shdl, RuntimeDatabase rdb, DefaultTableModel dtm) {
-		this.studentID = ID;
+	public AddRegisteredCourse(Student s, StorageHandler shdl) {
+		this.student = s;
 		this.shdl = shdl;
-		this.rdb = rdb;
-		this.dtm = dtm;
+		
 		setTitle("Add Registered Course");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(512, 215);
+		setSize(512, 256);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[grow]", "[grow][grow]"));
+		contentPane.setLayout(new MigLayout("", "[grow]", "[][][grow][grow]"));
+		
+		JLabel lblRequired = new JLabel("* - Required Field");
+		lblRequired.setForeground(Color.RED);
+		lblRequired.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		contentPane.add(lblRequired, "cell 0 0");
+		
+		status = new JLabel(" ");
+		status.setForeground(Color.RED);
+		contentPane.add(status, "cell 0 2");
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel, "cell 0 0,push ,grow");
+		contentPane.add(panel, "cell 0 1,push ,grow");
 		panel.setLayout(new MigLayout("", "[grow]", "[][][][][]"));
 		
 		JLabel lblCourseID = new JLabel("Course ID");
@@ -71,7 +78,7 @@ public class AddRegisteredCourse extends JFrame {
 		panel.add(lblReq_1, "cell 0 3");
 		
 		JPanel buttonPanel = new JPanel();
-		contentPane.add(buttonPanel, "cell 0 1,grow");
+		contentPane.add(buttonPanel, "cell 0 3,grow");
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JButton btnConfirm = new JButton("Confirm");
@@ -92,13 +99,17 @@ public class AddRegisteredCourse extends JFrame {
 	}
 	
 	private void addCourse() {
-		Student student = rdb.getStudentByID(studentID);
 		String idString = courseID.getText();
 		String nameString = courseName.getText();
-		student.addRegisteredCourse(idString, nameString);
-		dtm.addRow(new String[] {idString, nameString, "0.0"});
+		
+		if (idString.isBlank() || nameString.isBlank()) {
+			status.setText("All of the required fields must be filled out.");
+			return;
+		}
+		
 		try {
-			shdl.addRegisteredCourseToDatabase(studentID, idString, nameString);
+			student.addRegisteredCourse(idString, nameString);
+			shdl.addRegisteredCourseToDatabase(student.getID(), student.getRegisteredCourseByID(idString));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

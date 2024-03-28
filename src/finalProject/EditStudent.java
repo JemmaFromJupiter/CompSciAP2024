@@ -4,24 +4,16 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.table.*;
-import java.text.*;
-import java.util.*;
-
-import com.toedter.calendar.JCalendar;
+//import java.text.*;
+//import java.util.*;
 
 import net.miginfocom.swing.MigLayout;
 
-public class AddStudent extends JFrame {
-	
-	private Random random = new Random();
-	private DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
-	private DateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+public class EditStudent extends JFrame {
 	
 	private StorageHandler shdl;
-	private RuntimeDatabase rdb;
 	
-	private Student newStudent;
+	private Student student;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -30,7 +22,6 @@ public class AddStudent extends JFrame {
 	private JTextField inputLastName;
 	private JTextField inputPrefFirst;
 	private JTextField inputPrefLast;
-	private JCalendar dobCalendar;
 	private JComboBox<String> genderSelect;
 	private JComboBox<String> pronounsSelect;
 	private JLabel status;
@@ -38,14 +29,29 @@ public class AddStudent extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AddStudent(StorageHandler shdl, RuntimeDatabase rdb) {
-		
+	public EditStudent(Student s, StorageHandler shdl) {
+
 		this.shdl = shdl;
-		this.rdb = rdb;
+		this.student = s;
 		
-		setTitle("Add Student");
+		String pName = student.getPreferredName();
+		
+		String[] splitLName = student.getLegalName().split(" ");
+		String[] splitPName = new String[2];
+		
+		if (pName.contains(" ")) {
+			String[] temp = pName.split("\\s+", 2);
+			splitPName[0] = temp[0];
+			splitPName[1] = temp.length > 1 ? temp[1] : "";
+		} else {
+			splitPName[0] = pName;
+			splitPName[1] = "";
+		}
+			
+		
+		setTitle("Edit Student");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(512, 640);
+		setSize(512, 384);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		contentPane = new JPanel();
@@ -57,19 +63,23 @@ public class AddStudent extends JFrame {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		contentPane.add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new MigLayout("", "[]", "[][][]"));
+		mainPanel.setLayout(new MigLayout("", "[grow]", "[][][grow][]"));
 		
 		JLabel lblRequired = new JLabel("* - Required Field");
 		lblRequired.setForeground(Color.RED);
 		lblRequired.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		mainPanel.add(lblRequired, "cell 0 0");
 		
+		JPanel panel = new JPanel();
+		mainPanel.add(panel, "cell 0 2,push ,grow");
+		panel.setLayout(new BorderLayout(0, 0));
+		
 		status = new JLabel(" ");
 		status.setForeground(Color.RED);
-		mainPanel.add(status, "cell 0 2");
+		panel.add(status, BorderLayout.WEST);
 		
 		JPanel inputPanel = new JPanel();
-		mainPanel.add(inputPanel, "cell 0 1 2 1,push ,grow");
+		mainPanel.add(inputPanel, "cell 0 1,push ,grow");
 		inputPanel.setLayout(new MigLayout("", "[grow][grow]", "[][][][][][][][][][][][][][grow]"));
 		
 		JLabel lblEmail = new JLabel("Email");
@@ -81,7 +91,7 @@ public class AddStudent extends JFrame {
 		lblReq.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		inputPanel.add(lblReq, "cell 0 0");
 		
-		inputEmail = new JTextField();
+		inputEmail = new JTextField(student.getEmail());
 		inputPanel.add(inputEmail, "cell 0 1 2 1,growx");
 		inputEmail.setColumns(10);
 		
@@ -93,11 +103,11 @@ public class AddStudent extends JFrame {
 		lblLastName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		inputPanel.add(lblLastName, "flowx,cell 1 3");
 		
-		inputFirstName = new JTextField();
+		inputFirstName = new JTextField(splitLName[0]);
 		inputPanel.add(inputFirstName, "cell 0 4,growx");
 		inputFirstName.setColumns(10);
 		
-		inputLastName = new JTextField();
+		inputLastName = new JTextField(splitLName[1]);
 		inputPanel.add(inputLastName, "cell 1 4,growx");
 		inputLastName.setColumns(10);
 		
@@ -109,11 +119,11 @@ public class AddStudent extends JFrame {
 		lblPreferredLastName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		inputPanel.add(lblPreferredLastName, "cell 1 6");
 		
-		inputPrefFirst = new JTextField();
+		inputPrefFirst = new JTextField(splitPName[0]);
 		inputPanel.add(inputPrefFirst, "cell 0 7,growx");
 		inputPrefFirst.setColumns(10);
 		
-		inputPrefLast = new JTextField();
+		inputPrefLast = new JTextField(splitPName[1]);
 		inputPanel.add(inputPrefLast, "cell 1 7,growx");
 		inputPrefLast.setColumns(10);
 		
@@ -142,23 +152,13 @@ public class AddStudent extends JFrame {
 		
 		genderSelect = new JComboBox<>();
 		genderSelect.setModel(new DefaultComboBoxModel<String>(new String[] {"", "Male", "Female", "Other", "Prefer Not To Say"}));
+		genderSelect.setSelectedItem(student.getGender());
 		inputPanel.add(genderSelect, "cell 0 10,growx");
 		
 		pronounsSelect = new JComboBox<>();
 		pronounsSelect.setModel(new DefaultComboBoxModel<String>(new String[] {"", "He/Him", "She/Her", "They/Them", "Other", "Prefer Not To Say"}));
+		pronounsSelect.setSelectedItem(student.getPronouns());
 		inputPanel.add(pronounsSelect, "cell 1 10,growx");
-		
-		JLabel lblDateOfBirth_1 = new JLabel("Date of Birth");
-		lblDateOfBirth_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		inputPanel.add(lblDateOfBirth_1, "flowx,cell 0 12");
-		
-		dobCalendar = new JCalendar();
-		inputPanel.add(dobCalendar, "cell 0 13 2 1,grow");
-		
-		JLabel lblReq0_1_1_1 = new JLabel("*");
-		lblReq0_1_1_1.setForeground(Color.RED);
-		lblReq0_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		inputPanel.add(lblReq0_1_1_1, "cell 0 12");
 		
 		JPanel buttonPanel = new JPanel();
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -174,54 +174,31 @@ public class AddStudent extends JFrame {
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				addStudent();
+				updateStudent();
 			}
 		});
 		buttonPanel.add(btnConfirm);
 		buttonPanel.add(btnCancel);
 	}
 	
-	private void addStudent() {
-		String studentID = String.format("%9s", Integer.toString(random.nextInt(1, 1000000000))).replace(" ", "0");
-		String email = inputEmail.getText();
-		String firstName = inputFirstName.getText();
-		String lastName = inputLastName.getText();
-		String prefFirstName = inputPrefFirst.getText();
-		String prefLastName = inputPrefLast.getText();
-		String gender = genderSelect.getSelectedItem().toString();
-		String pronouns = pronounsSelect.getSelectedItem().toString();
-		String dob = parseDateToString();
-		
-		if (email.isBlank() || firstName.isBlank() || lastName.isBlank() || gender.isBlank()) {
-			status.setText("All of the required fields must be filled out.!");
+	private void updateStudent() {
+		if (inputEmail.getText().isBlank() || inputFirstName.getText().isBlank() || inputLastName.getText().isBlank() || genderSelect.getSelectedItem().toString().isBlank()) {
+			status.setText("All of the required fields must be filled out.");
 			return;
 		}
-			
+		
+		String legalName = String.format("%s %s", inputFirstName.getText(), inputLastName.getText());
+		String preferredName = String.format("%s %s", inputPrefFirst.getText(), inputPrefLast.getText());
+		
 		try {
-			newStudent = new Student(
-					studentID,
-					firstName + " " + lastName,
-					prefFirstName + " " + prefLastName,
-					gender,
-					pronouns,
-					email,
-					dob);
-				
-			rdb.append(newStudent);
-			shdl.addStudentToDatabase(newStudent);
-		} catch (Exception e3) {
-			e3.printStackTrace();
+			student.setAllEditable(inputEmail.getText(), legalName, preferredName, genderSelect.getSelectedItem().toString(), pronounsSelect.getSelectedItem().toString());
+			shdl.updateStudentInfo(student);
+		} catch (Exception e) {
+			System.out.println("An Error Occurred.");
+			e.printStackTrace();
+			return;
 		}
 		dispose();
-	}
-	
-	private String parseDateToString() {
-		try {
-			return formatter1.format(formatter.parse(dobCalendar.getDate().toString()));
-		} catch (Exception dtE) {
-			dtE.printStackTrace();
-			return "01/01/2000";
-		}
 	}
 	
 }

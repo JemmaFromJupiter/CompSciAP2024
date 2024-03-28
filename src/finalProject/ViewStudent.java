@@ -11,10 +11,15 @@ import net.miginfocom.swing.MigLayout;
 
 public class ViewStudent extends JFrame {
 	
+	// private final int isFocused = JComponent.WHEN_FOCUSED;
+	private final int inFocusedWindow = JComponent.WHEN_IN_FOCUSED_WINDOW;
+	
+	private KeyStroke ctrlR = KeyStroke.getKeyStroke("control R");
+	private final String REFRESH = "rfsh";
+	
 	private Student student;
 	
 	private StorageHandler shdl;
-	private RuntimeDatabase rdb;
 	
 	private DefaultTableModel rcModel;
 	private DefaultTableModel ecModel;
@@ -26,14 +31,18 @@ public class ViewStudent extends JFrame {
 	private JPanel contentPane;
 	private JTable registeredCoursesTable;
 	private JTable emergencyContactsTable;
+	private JLabel lblLNM;
+	private JLabel lblPNM;
+	private JLabel lblGND;
+	private JLabel lblPNS;
+	private JLabel lblEML;
 
 	/**
 	 * Create the frame.
 	 */
-	public ViewStudent(Student s, StorageHandler shdl, RuntimeDatabase rdb) {
+	public ViewStudent(Student s, StorageHandler shdl) {
 		student = s;
 		this.shdl = shdl;
-		this.rdb = rdb;
 		
 		rcModel = new DefaultTableModel(s.getRegisteredCourses(), rcColumns);
 		ecModel = new DefaultTableModel(s.getEmergencyContacts(), ecColumns);
@@ -50,45 +59,68 @@ public class ViewStudent extends JFrame {
 		JMenu mnActions = new JMenu("Actions");
 		menuBar.add(mnActions);
 		
-		JMenuItem mntmEditStudent = new JMenuItem("Edit Student Info");
-		mnActions.add(mntmEditStudent);
+		JMenuItem mntmRefreshAll = new JMenuItem("Refresh All");
+		mntmRefreshAll.addActionListener(new RefreshAllAction());
+		mnActions.add(mntmRefreshAll);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 		mnActions.add(mntmExit);
+		
+		JMenu mnStudentInfo = new JMenu("Student Info");
+		menuBar.add(mnStudentInfo);
+		
+		JMenuItem mntmEditStudent = new JMenuItem("Edit Student Info");
+		mntmEditStudent.addActionListener(new EditStudentAction());
+		mnStudentInfo.add(mntmEditStudent);
+		
+		JMenuItem mntmRefreshInfo = new JMenuItem("Refresh Student Info");
+		mntmRefreshInfo.addActionListener(new RefreshInfoAction());
+		mnStudentInfo.add(mntmRefreshInfo);
 		
 		JMenu mnRC = new JMenu("Registered Courses");
 		menuBar.add(mnRC);
 		
 		JMenuItem mntmAddRC = new JMenuItem("Add Registered Course");
-		mntmAddRC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				addRegisteredCourseWindow();
-			}
-		});
+		mntmAddRC.addActionListener(new AddRegisteredCourseAction());
 		mnRC.add(mntmAddRC);
 		
 		JMenuItem mntmDelRC = new JMenuItem("Remove Registered Course");
-		mntmDelRC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				removeRegisteredCourse();
-			}
-		});
+		mntmDelRC.addActionListener(new RemoveRegisteredCourseAction());
 		mnRC.add(mntmDelRC);
+		
+		JMenuItem mntmRefreshCourses = new JMenuItem("Refresh Courses");
+		mntmRefreshCourses.addActionListener(new RefreshCoursesAction());
+		mnRC.add(mntmRefreshCourses);
 		
 		JMenu mnEC = new JMenu("Emergency Contacts");
 		menuBar.add(mnEC);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Add Emergency Contact");
-		mnEC.add(mntmNewMenuItem);
+		JMenuItem mntmAddEC = new JMenuItem("Add Emergency Contact");
+		mntmAddEC.addActionListener(new AddEmergencyContactAction());
+		mnEC.add(mntmAddEC);
 		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Remove Emergency Contact");
-		mnEC.add(mntmNewMenuItem_1);
+		JMenuItem mntmDelEC = new JMenuItem("Remove Emergency Contact");
+		mntmDelEC.addActionListener(new RemoveContactAction());
+		mnEC.add(mntmDelEC);
+		
+		JMenuItem mntmRefreshContacts = new JMenuItem("Refresh Contacts");
+		mntmRefreshContacts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new RefreshContactsAction().actionPerformed(e);
+			}
+		});
+		mnEC.add(mntmRefreshContacts);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 		
-		JMenuItem mntmNewMenuItem_2 = new JMenuItem("About");
-		mnHelp.add(mntmNewMenuItem_2);
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mnHelp.add(mntmAbout);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -117,7 +149,7 @@ public class ViewStudent extends JFrame {
 		lblLegalName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		LNM.add(lblLegalName, "flowx,cell 0 0");
 		
-		JLabel lblLNM = new JLabel(student.getLegalName());
+		lblLNM = new JLabel(student.getLegalName());
 		lblLNM.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		LNM.add(lblLNM, "cell 0 1");
 		
@@ -130,7 +162,7 @@ public class ViewStudent extends JFrame {
 		lblPreferredName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		PNM.add(lblPreferredName, "flowx,cell 0 0");
 		
-		JLabel lblPNM = new JLabel(student.getPreferredName());
+		lblPNM = new JLabel(student.getPreferredName());
 		lblPNM.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		PNM.add(lblPNM, "cell 0 1");
 		
@@ -143,7 +175,7 @@ public class ViewStudent extends JFrame {
 		lblGender.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		GND.add(lblGender, "flowx,cell 0 0");
 		
-		JLabel lblGND = new JLabel(student.getGender());
+		lblGND = new JLabel(student.getGender());
 		lblGND.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		GND.add(lblGND, "cell 0 1");
 		
@@ -156,7 +188,7 @@ public class ViewStudent extends JFrame {
 		lblPronouns.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		PNS.add(lblPronouns, "flowx,cell 0 0");
 		
-		JLabel lblPNS = new JLabel(student.getPronouns());
+		lblPNS = new JLabel(student.getPronouns());
 		lblPNS.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		PNS.add(lblPNS, "cell 0 1");
 		
@@ -169,7 +201,7 @@ public class ViewStudent extends JFrame {
 		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		EML.add(lblEmail, "flowx,cell 0 0");
 		
-		JLabel lblEML = new JLabel(student.getEmail());
+		lblEML = new JLabel(student.getEmail());
 		lblEML.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		EML.add(lblEML, "cell 0 1");
 		
@@ -190,6 +222,14 @@ public class ViewStudent extends JFrame {
 		contentPane.add(rcPane, "cell 0 4 3 1,grow");
 		
 		registeredCoursesTable = new JTable();
+		registeredCoursesTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2 && registeredCoursesTable.getSelectedRow() >= 0) {
+					new UpdateRegisteredCourseAction().actionPerformed(null);
+				}
+			}
+		});
 		registeredCoursesTable.setFillsViewportHeight(true);
 		registeredCoursesTable.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		registeredCoursesTable.getTableHeader().setReorderingAllowed(false);
@@ -230,28 +270,132 @@ public class ViewStudent extends JFrame {
 		lblStudentInformation.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		contentPane.add(lblStudentInformation, "cell 0 0,growx,aligny top");
 		
-		JButton editStudentInfo = new JButton("Edit");
-		contentPane.add(editStudentInfo, "cell 9 0,alignx right,growy");
+		setUpKeyBinds();
 	}
 	
-	public void addRegisteredCourseWindow() {
-		AddRegisteredCourse addRegisteredCourseWindow = new AddRegisteredCourse(student.getID(), shdl, rdb, rcModel);
-		addRegisteredCourseWindow.setVisible(true);
-	}
-	
-	public void removeRegisteredCourse() {
-		int col = 0;
-		int row = registeredCoursesTable.getSelectedRow();
+	private void setUpKeyBinds() {
+		JComponent rootPane = this.getRootPane();
 		
-		try {
-			String courseID = (String) registeredCoursesTable.getValueAt(row, col);
-			shdl.deleteCourseFromRegisteredCourses(courseID);
-			rcModel.removeRow(row);
-			student.removeRegisteredCourse(courseID);
-		} catch (Exception e2) {
-			System.out.println("An Error Occurred.");
-			e2.printStackTrace();
+		rootPane.getInputMap(inFocusedWindow).put(ctrlR, REFRESH);
+		rootPane.getActionMap().put(REFRESH, new RefreshAllAction());
+	}
+	
+	private class RefreshCoursesAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			rcModel.setDataVector(student.getRegisteredCourses(), rcColumns);
 		}
-		
+	}
+	
+	private class RefreshContactsAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			ecModel.setDataVector(student.getEmergencyContacts(), ecColumns);
+		}
+	}
+	
+	private class RefreshInfoAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			lblLNM.setText(student.getLegalName());
+			lblPNM.setText(student.getPreferredName());
+			lblGND.setText(student.getGender());
+			lblPNS.setText(student.getPronouns());
+			lblEML.setText(student.getEmail());
+		}
+	}
+	
+	private class RefreshAllAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			new RefreshCoursesAction().actionPerformed(null);
+			new RefreshContactsAction().actionPerformed(null);
+			new RefreshInfoAction().actionPerformed(null);
+		}
+	}
+	
+	private class EditStudentAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			EditStudent editStudentWindow = new EditStudent(student, shdl);
+			editStudentWindow.setVisible(true);
+		}
+	}
+	
+	private class AddEmergencyContactAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			AddEmergencyContact addEmergencyContactWindow = new AddEmergencyContact(student, shdl);
+			addEmergencyContactWindow.setVisible(true);
+		}
+	}
+	
+	private class RemoveContactAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			int col = 0;
+			int row = emergencyContactsTable.getSelectedRow();
+			
+			try {
+				String contactID = (String) emergencyContactsTable.getValueAt(row, col);
+				shdl.deleteContactFromEmergencyContacts(contactID);
+				student.removeEmergencyContact(contactID);
+				new RefreshContactsAction().actionPerformed(null);
+			} catch (Exception e2) {
+				System.out.println("An Error Occurred.");
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	private class AddRegisteredCourseAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			AddRegisteredCourse addRegisteredCourseWindow = new AddRegisteredCourse(student, shdl);
+			addRegisteredCourseWindow.setVisible(true);
+		}
+	}
+	
+	private class UpdateRegisteredCourseAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			int col = 0;
+			int row = registeredCoursesTable.getSelectedRow();
+			
+			try {
+				String grade = JOptionPane.showInputDialog("What would you like to change the grade to?");
+				if (grade == null || grade.isBlank() || !grade.matches("[0-9.]+")) {
+					JOptionPane.showMessageDialog(null, "Invalid Grade Input", "", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				Double dblGrade = Double.parseDouble(grade);
+				
+				if (dblGrade < 0.00) {
+					JOptionPane.showMessageDialog(null, "Grade Must Not Subceed 0.00", "", JOptionPane.WARNING_MESSAGE);
+					return;
+				} else if (dblGrade > 100.00) {
+					JOptionPane.showMessageDialog(null, "Grade Must Not Exceed 100.00", "", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				String courseID = (String) registeredCoursesTable.getValueAt(row, col);
+				student.updateCourseGrade(courseID, dblGrade);
+				shdl.updateRegisteredCourseInfo(student.getID(), student.getRegisteredCourseByID(courseID));
+				new RefreshCoursesAction().actionPerformed(null);
+			} catch (Exception e2) {
+				System.out.println("An Error Occurred.");
+				e2.printStackTrace();
+				return;
+			}
+		}
+	}
+	
+	private class RemoveRegisteredCourseAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			int col = 0;
+			int row = registeredCoursesTable.getSelectedRow();
+			
+			try {
+				String courseID = (String) registeredCoursesTable.getValueAt(row, col);
+				shdl.deleteCourseFromRegisteredCourses(courseID);
+				student.removeRegisteredCourse(courseID);
+				new RefreshCoursesAction().actionPerformed(null);
+			} catch (Exception e2) {
+				System.out.println("An Error Occurred.");
+				e2.printStackTrace();
+			}
+		}
 	}
 }
