@@ -85,6 +85,21 @@ public class Application extends JFrame {
 		mntmExit.addActionListener(new QuitAction());
 		mnActions.add(mntmExit);
 		
+		JMenu mnTesting = new JMenu("Testing");
+		menuBar.add(mnTesting);
+		
+		JMenuItem mntmDmpDB = new JMenuItem("Dump Test Students Into Database");
+		mntmDmpDB.addActionListener(new TestDumpStudentsAction());
+		mnTesting.add(mntmDmpDB);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Delete All Students From Database");
+		mntmNewMenuItem.addActionListener(new TestDeleteAllStudentsAction());
+		mnTesting.add(mntmNewMenuItem);
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Get Student Count");
+		mntmNewMenuItem_1.addActionListener(new TestGetStudentsAction());
+		mnTesting.add(mntmNewMenuItem_1);
+		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 		
@@ -202,6 +217,33 @@ public class Application extends JFrame {
 			}
 			ViewStudent viewStudentWindow = new ViewStudent(rdb.getStudentByID((String) studentTable.getValueAt(row, col)), shdl);
 			viewStudentWindow.setVisible(true);
+		}
+	}
+	
+	private class TestDumpStudentsAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			String Students = JOptionPane.showInputDialog("How Many Students Would You Like To Dump?");
+			Integer numStudents;
+			try {
+				numStudents = Integer.parseInt(Students);
+			} catch (Exception ef) {
+				JOptionPane.showMessageDialog(null, "Something went wrong!", "", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
+			PopulateTableProgress.showDialog(numStudents, shdl, rdb, studentTableModel);
+		}
+	}
+	
+	private class TestDeleteAllStudentsAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			DeleteAllStudentsProgress.showDialog(shdl, rdb, studentTableModel);
+		}
+	}
+	
+	private class TestGetStudentsAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			JOptionPane.showMessageDialog(null, String.format("There are currently %d students in the database.", rdb.size()));
 		}
 	}
 	

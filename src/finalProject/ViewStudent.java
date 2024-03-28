@@ -23,6 +23,9 @@ public class ViewStudent extends JFrame {
 	private KeyStroke bksp = KeyStroke.getKeyStroke("BACK_SPACE");
 	private final String REMOVE = "table-";
 	
+	private KeyStroke ctrlQ = KeyStroke.getKeyStroke("control Q");
+	private final String EXIT = "exit";
+	
 	private Student student;
 	
 	private StorageHandler shdl;
@@ -67,11 +70,11 @@ public class ViewStudent extends JFrame {
 		JMenu mnActions = new JMenu("Actions");
 		menuBar.add(mnActions);
 		
-		JMenuItem mntmRefreshAll = new JMenuItem("Refresh All");
+		JMenuItem mntmRefreshAll = new JMenuItem(String.format("Refresh All%50s", "CTRL+R"));
 		mntmRefreshAll.addActionListener(new RefreshAllAction());
 		mnActions.add(mntmRefreshAll);
 		
-		JMenuItem mntmExit = new JMenuItem("Exit");
+		JMenuItem mntmExit = new JMenuItem(String.format("Exit Window%47s", "CTRL+Q"));
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -97,7 +100,7 @@ public class ViewStudent extends JFrame {
 		mntmAddRC.addActionListener(new AddCourseAction());
 		mnRC.add(mntmAddRC);
 		
-		JMenuItem mntmDelRC = new JMenuItem("Remove Registered Course");
+		JMenuItem mntmDelRC = new JMenuItem(String.format("Remove Registered Course%10s", "DEL"));
 		mntmDelRC.addActionListener(new RemoveCourseAction());
 		mnRC.add(mntmDelRC);
 		
@@ -112,7 +115,7 @@ public class ViewStudent extends JFrame {
 		mntmAddEC.addActionListener(new AddContactAction());
 		mnEC.add(mntmAddEC);
 		
-		JMenuItem mntmDelEC = new JMenuItem("Remove Emergency Contact");
+		JMenuItem mntmDelEC = new JMenuItem(String.format("Remove Emergency Contact%10s", "DEL"));
 		mntmDelEC.addActionListener(new RemoveContactAction());
 		mnEC.add(mntmDelEC);
 		
@@ -312,15 +315,18 @@ public class ViewStudent extends JFrame {
 	private void setUpKeyBinds() {
 		JComponent rootPane = this.getRootPane();
 		
+		// Input Mapping
 		rootPane.getInputMap(inFocusedWindow).put(ctrlR, REFRESH);
-		rootPane.getActionMap().put(REFRESH, new RefreshAllAction());
-		
+		rootPane.getInputMap(inFocusedWindow).put(ctrlQ, EXIT);
 		registeredCoursesTable.getInputMap(isFocused).put(del, REMOVE);
 		registeredCoursesTable.getInputMap(isFocused).put(bksp, REMOVE);
-		registeredCoursesTable.getActionMap().put(REMOVE, new RemoveCourseAction());
-		
 		emergencyContactsTable.getInputMap(isFocused).put(del, REMOVE);
 		emergencyContactsTable.getInputMap(isFocused).put(bksp, REMOVE);
+		
+		// Action Mapping.
+		rootPane.getActionMap().put(REFRESH, new RefreshAllAction());
+		rootPane.getActionMap().put(EXIT, new ExitWindowAction());
+		registeredCoursesTable.getActionMap().put(REMOVE, new RemoveCourseAction());
 		emergencyContactsTable.getActionMap().put(REMOVE, new RemoveContactAction());
 		
 	}
@@ -453,6 +459,12 @@ public class ViewStudent extends JFrame {
 				System.out.println("An Error Occurred.");
 				e2.printStackTrace();
 			}
+		}
+	}
+	
+	private class ExitWindowAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			dispose();
 		}
 	}
 }

@@ -30,7 +30,7 @@ public class Student {
     this.EmergencyContacts = new ArrayList<>();
   }
 
-  class EmergencyContact {
+  static class EmergencyContact {
     private String ContactID;
     private String ContactName;
     private String ContactHome;
@@ -97,7 +97,7 @@ public class Student {
     }
   }
 
-  class RegisteredCourse {
+  static class RegisteredCourse {
     private String CourseID;
     private String CourseName;
     private Double TotalGrade;

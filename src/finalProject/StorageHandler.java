@@ -3,6 +3,7 @@ package finalProject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -103,7 +104,7 @@ public class StorageHandler {
 	  
   }
   
-  public void deleteFromDatabase(String ID)throws SQLException {
+  public void deleteFromDatabase(String ID) throws SQLException {
 	  this.deleteStudentFromRegisteredCourses(ID);
 	  this.deleteFromEmergencyContacts(ID);
 	  this.deleteFromStudents(ID);
@@ -175,12 +176,12 @@ public class StorageHandler {
 
       // Appends the information to the runtime database.
       if (!StudentID.equals(currentStudentID)) {
-    	System.out.println("Adding Student.");
+    	//System.out.println("Adding Student.");
         newdb.append(StudentID, LegalName, PrefName, Gender, Pronouns, Email, DoB);
         currentStudentID = StudentID;
       }
-      System.out.println("Student ID being called: " + StudentID);
-      System.out.println("Student ID currently in use: " + currentStudentID);
+      // System.out.println("Student ID being called: " + StudentID);
+      // System.out.println("Student ID currently in use: " + currentStudentID);
       
       if (CourseID != null && !newdb.getStudentByID(currentStudentID).courseRegistered(CourseID))
     	  newdb.getStudentByID(currentStudentID).addRegisteredCourse(CourseID, CourseName, CourseCredits, CourseGrade);
