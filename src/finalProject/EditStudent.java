@@ -51,7 +51,7 @@ public class EditStudent extends JFrame {
 		
 		setTitle("Edit Student");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(512, 384);
+		setSize(512, 394);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		contentPane = new JPanel();
@@ -182,16 +182,24 @@ public class EditStudent extends JFrame {
 	}
 	
 	private void updateStudent() {
-		if (inputEmail.getText().isBlank() || inputFirstName.getText().isBlank() || inputLastName.getText().isBlank() || genderSelect.getSelectedItem().toString().isBlank()) {
+		String email = inputEmail.getText().strip();
+		String firstName = inputFirstName.getText().strip();
+		String lastName = inputLastName.getText().strip();
+		String prefFirst = inputPrefFirst.getText().strip();
+		String prefLast = inputPrefLast.getText().strip();
+		String gender = genderSelect.getSelectedItem().toString().strip();
+		String pronouns = pronounsSelect.getSelectedItem().toString().strip();
+		
+		if (email.isBlank() || firstName.isBlank() || lastName.isBlank() || gender.isBlank()) {
 			status.setText("All of the required fields must be filled out.");
 			return;
 		}
 		
-		String legalName = String.format("%s %s", inputFirstName.getText(), inputLastName.getText());
-		String preferredName = String.format("%s %s", inputPrefFirst.getText(), inputPrefLast.getText());
+		String legalName = String.format("%s %s", firstName, lastName);
+		String preferredName = String.format("%s %s", prefFirst, prefLast);
 		
 		try {
-			student.setAllEditable(inputEmail.getText(), legalName, preferredName, genderSelect.getSelectedItem().toString(), pronounsSelect.getSelectedItem().toString());
+			student.setAllEditable(email, legalName, preferredName, gender, pronouns);
 			shdl.updateStudentInfo(student);
 		} catch (Exception e) {
 			System.out.println("An Error Occurred.");

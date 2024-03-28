@@ -45,13 +45,14 @@ public class StorageHandler {
   }
   
   public void addRegisteredCourseToDatabase(String ID, Student.RegisteredCourse rc) throws SQLException {
-	  String sql = "INSERT INTO registered_courses (STUDENT_ID, COURSE_ID, COURSE_NAME, COURSE_GRADE)" +
-	  "VALUES (?, ?, ?, ?)";
+	  String sql = "INSERT INTO registered_courses (STUDENT_ID, COURSE_ID, COURSE_NAME, COURSE_CREDITS, COURSE_GRADE)" +
+	  "VALUES (?, ?, ?, ?, ?)";
 	  try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 		  preparedStatement.setString(1, ID);
 		  preparedStatement.setString(2, rc.getCourseID());
 		  preparedStatement.setString(3, rc.getCourseName());
-		  preparedStatement.setDouble(4, 0.0);
+		  preparedStatement.setInt(4, rc.getCourseCredits());
+		  preparedStatement.setDouble(5, 0.0);
 		  preparedStatement.execute();
 	  }
   }
@@ -163,6 +164,7 @@ public class StorageHandler {
 
       String CourseID = this.resultSet.getString("COURSE_ID");
       String CourseName = this.resultSet.getString("COURSE_NAME");
+      Integer CourseCredits = this.resultSet.getInt("COURSE_CREDITS");
       Double CourseGrade = this.resultSet.getDouble("COURSE_GRADE");
 
       String ContactID = this.resultSet.getString("CONTACT_ID");
@@ -181,7 +183,7 @@ public class StorageHandler {
       System.out.println("Student ID currently in use: " + currentStudentID);
       
       if (CourseID != null && !newdb.getStudentByID(currentStudentID).courseRegistered(CourseID))
-    	  newdb.getStudentByID(currentStudentID).addRegisteredCourse(CourseID, CourseName, CourseGrade);
+    	  newdb.getStudentByID(currentStudentID).addRegisteredCourse(CourseID, CourseName, CourseCredits, CourseGrade);
 
       if (ContactID != null && !newdb.getStudentByID(currentStudentID).emergencyContactRegistered(ContactID))
     	  newdb.getStudentByID(currentStudentID).addEmergencyContact(ContactID, ContactName, ContactHome, ContactCell, ContactEmail);

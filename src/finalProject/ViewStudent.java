@@ -2,6 +2,8 @@ package finalProject;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Comparator;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
@@ -11,11 +13,15 @@ import net.miginfocom.swing.MigLayout;
 
 public class ViewStudent extends JFrame {
 	
-	// private final int isFocused = JComponent.WHEN_FOCUSED;
+	private final int isFocused = JComponent.WHEN_FOCUSED;
 	private final int inFocusedWindow = JComponent.WHEN_IN_FOCUSED_WINDOW;
 	
 	private KeyStroke ctrlR = KeyStroke.getKeyStroke("control R");
 	private final String REFRESH = "rfsh";
+	
+	private KeyStroke del = KeyStroke.getKeyStroke("DELETE");
+	private KeyStroke bksp = KeyStroke.getKeyStroke("BACK_SPACE");
+	private final String REMOVE = "table-";
 	
 	private Student student;
 	
@@ -36,6 +42,8 @@ public class ViewStudent extends JFrame {
 	private JLabel lblGND;
 	private JLabel lblPNS;
 	private JLabel lblEML;
+	private JLabel lblGPA;
+	private JLabel lblAveGrade;
 
 	/**
 	 * Create the frame.
@@ -86,11 +94,11 @@ public class ViewStudent extends JFrame {
 		menuBar.add(mnRC);
 		
 		JMenuItem mntmAddRC = new JMenuItem("Add Registered Course");
-		mntmAddRC.addActionListener(new AddRegisteredCourseAction());
+		mntmAddRC.addActionListener(new AddCourseAction());
 		mnRC.add(mntmAddRC);
 		
 		JMenuItem mntmDelRC = new JMenuItem("Remove Registered Course");
-		mntmDelRC.addActionListener(new RemoveRegisteredCourseAction());
+		mntmDelRC.addActionListener(new RemoveCourseAction());
 		mnRC.add(mntmDelRC);
 		
 		JMenuItem mntmRefreshCourses = new JMenuItem("Refresh Courses");
@@ -101,7 +109,7 @@ public class ViewStudent extends JFrame {
 		menuBar.add(mnEC);
 		
 		JMenuItem mntmAddEC = new JMenuItem("Add Emergency Contact");
-		mntmAddEC.addActionListener(new AddEmergencyContactAction());
+		mntmAddEC.addActionListener(new AddContactAction());
 		mnEC.add(mntmAddEC);
 		
 		JMenuItem mntmDelEC = new JMenuItem("Remove Emergency Contact");
@@ -125,7 +133,7 @@ public class ViewStudent extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[189px][247px][49px][10px][][1px][9px][189px][247px][49px]", "[25px][253px][2px][25px][253px]"));
+		contentPane.setLayout(new MigLayout("", "[189px][247px][49px][10px][1px][9px][189px][247px][49px]", "[25px][253px][2px][25px][253px]"));
 		
 		JLabel lblStudentId = new JLabel("Student ID:");
 		lblStudentId.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -133,11 +141,11 @@ public class ViewStudent extends JFrame {
 		
 		JLabel lblStudentNumber = new JLabel(student.getID());
 		lblStudentNumber.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblStudentNumber, "cell 4 0");
+		contentPane.add(lblStudentNumber, "cell 5 0");
 		
 		JPanel studentInfoPanel = new JPanel();
 		studentInfoPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		contentPane.add(studentInfoPanel, "cell 0 1 10 1,grow");
+		contentPane.add(studentInfoPanel, "cell 0 1 12 1,grow");
 		studentInfoPanel.setLayout(new MigLayout("wrap", "grow, fill", "grow, fill"));
 		
 		JPanel LNM = new JPanel();
@@ -218,15 +226,31 @@ public class ViewStudent extends JFrame {
 		lblDOB.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		DOB.add(lblDOB, "cell 0 1");
 		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setOrientation(SwingConstants.VERTICAL);
+		contentPane.add(separator_3, "flowx,cell 1 3,alignx center,growy");
+		
+		JLabel lblAverageGrade = new JLabel("Average Grade:");
+		lblAverageGrade.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblAverageGrade, "cell 1 3");
+		
+		JLabel lblGPAC = new JLabel("GPA:");
+		lblGPAC.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblGPAC, "flowx,cell 2 3,push ,alignx center,aligny center");
+		
+		JLabel lblEmergencyContacts = new JLabel("Emergency Contacts");
+		lblEmergencyContacts.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblEmergencyContacts, "cell 5 3,growx,aligny top");
+		
 		JScrollPane rcPane = new JScrollPane();
-		contentPane.add(rcPane, "cell 0 4 3 1,grow");
+		contentPane.add(rcPane, "cell 0 4 4 1,push ,grow");
 		
 		registeredCoursesTable = new JTable();
 		registeredCoursesTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2 && registeredCoursesTable.getSelectedRow() >= 0) {
-					new UpdateRegisteredCourseAction().actionPerformed(null);
+					new UpdateCourseAction().actionPerformed(null);
 				}
 			}
 		});
@@ -234,41 +258,53 @@ public class ViewStudent extends JFrame {
 		registeredCoursesTable.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		registeredCoursesTable.getTableHeader().setReorderingAllowed(false);
 		registeredCoursesTable.setModel(rcModel);
+		TableRowSorter<TableModel> rcTableSorter = new TableRowSorter<>(registeredCoursesTable.getModel());
+		registeredCoursesTable.setRowSorter(rcTableSorter);
 		registeredCoursesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		rcPane.setViewportView(registeredCoursesTable);
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
-		contentPane.add(separator_1, "cell 4 4,alignx center,growy");
+		contentPane.add(separator_1, "cell 4 3 1 2,push ,alignx center,growy");
+		
+		registeredCoursesTable.setDefaultEditor(Object.class, null);
+		
+		JSeparator separator = new JSeparator();
+		contentPane.add(separator, "cell 0 2 12 1,growx,aligny top");
+		
+		JLabel lblRegisteredCourses = new JLabel("Registered Courses");
+		lblRegisteredCourses.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblRegisteredCourses, "cell 0 3,alignx left,aligny top");
+		
+		JLabel lblStudentInformation = new JLabel("Student Information");
+		lblStudentInformation.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblStudentInformation, "cell 0 0,growx,aligny top");
+		
+		lblAveGrade = new JLabel(String.format("%.2f", student.calculateAverageGrade()));
+		lblAveGrade.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblAveGrade, "cell 1 3");
 		
 		JScrollPane ecPane = new JScrollPane();
-		contentPane.add(ecPane, "cell 7 4 3 1,grow");
+		contentPane.add(ecPane, "cell 5 4 3 1,push ,grow");
 		
 		emergencyContactsTable = new JTable();
 		emergencyContactsTable.setFillsViewportHeight(true);
 		emergencyContactsTable.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		emergencyContactsTable.getTableHeader().setReorderingAllowed(false);
 		emergencyContactsTable.setModel(ecModel);
+		TableRowSorter<TableModel> ecTableSorter = new TableRowSorter<>(emergencyContactsTable.getModel());
+		emergencyContactsTable.setRowSorter(ecTableSorter);
 		emergencyContactsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ecPane.setViewportView(emergencyContactsTable);
 		
-		registeredCoursesTable.setDefaultEditor(Object.class, null);
+		lblGPA = new JLabel(String.format("%.2f", student.calculateGPA()));
+		lblGPA.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		contentPane.add(lblGPA, "cell 2 3,push ,aligny center");
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		contentPane.add(separator_2, "cell 1 3,growy");
 		emergencyContactsTable.setDefaultEditor(Object.class, null);
-		
-		JSeparator separator = new JSeparator();
-		contentPane.add(separator, "cell 0 2 10 1,growx,aligny top");
-		
-		JLabel lblRegisteredCourses = new JLabel("Registered Courses");
-		lblRegisteredCourses.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblRegisteredCourses, "cell 0 3,alignx left,aligny top");
-		
-		JLabel lblEmergencyContacts = new JLabel("Emergency Contacts");
-		lblEmergencyContacts.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblEmergencyContacts, "cell 7 3,growx,aligny top");
-		
-		JLabel lblStudentInformation = new JLabel("Student Information");
-		lblStudentInformation.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblStudentInformation, "cell 0 0,growx,aligny top");
 		
 		setUpKeyBinds();
 	}
@@ -278,11 +314,22 @@ public class ViewStudent extends JFrame {
 		
 		rootPane.getInputMap(inFocusedWindow).put(ctrlR, REFRESH);
 		rootPane.getActionMap().put(REFRESH, new RefreshAllAction());
+		
+		registeredCoursesTable.getInputMap(isFocused).put(del, REMOVE);
+		registeredCoursesTable.getInputMap(isFocused).put(bksp, REMOVE);
+		registeredCoursesTable.getActionMap().put(REMOVE, new RemoveCourseAction());
+		
+		emergencyContactsTable.getInputMap(isFocused).put(del, REMOVE);
+		emergencyContactsTable.getInputMap(isFocused).put(bksp, REMOVE);
+		emergencyContactsTable.getActionMap().put(REMOVE, new RemoveContactAction());
+		
 	}
 	
 	private class RefreshCoursesAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			rcModel.setDataVector(student.getRegisteredCourses(), rcColumns);
+			lblGPA.setText(String.format("%.2f", student.calculateGPA()));
+			lblAveGrade.setText(String.format("%.2f", student.calculateAverageGrade()));
 		}
 	}
 	
@@ -317,7 +364,7 @@ public class ViewStudent extends JFrame {
 		}
 	}
 	
-	private class AddEmergencyContactAction extends AbstractAction {
+	private class AddContactAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			AddEmergencyContact addEmergencyContactWindow = new AddEmergencyContact(student, shdl);
 			addEmergencyContactWindow.setVisible(true);
@@ -326,6 +373,11 @@ public class ViewStudent extends JFrame {
 	
 	private class RemoveContactAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this contact?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+			
+			if (confirm == JOptionPane.NO_OPTION)
+				return;
+			
 			int col = 0;
 			int row = emergencyContactsTable.getSelectedRow();
 			
@@ -341,14 +393,14 @@ public class ViewStudent extends JFrame {
 		}
 	}
 	
-	private class AddRegisteredCourseAction extends AbstractAction {
+	private class AddCourseAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			AddRegisteredCourse addRegisteredCourseWindow = new AddRegisteredCourse(student, shdl);
 			addRegisteredCourseWindow.setVisible(true);
 		}
 	}
 	
-	private class UpdateRegisteredCourseAction extends AbstractAction {
+	private class UpdateCourseAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			int col = 0;
 			int row = registeredCoursesTable.getSelectedRow();
@@ -382,8 +434,13 @@ public class ViewStudent extends JFrame {
 		}
 	}
 	
-	private class RemoveRegisteredCourseAction extends AbstractAction {
+	private class RemoveCourseAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this course?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+			
+			if (confirm == JOptionPane.NO_OPTION)
+				return;
+			
 			int col = 0;
 			int row = registeredCoursesTable.getSelectedRow();
 			

@@ -101,17 +101,20 @@ public class Student {
     private String CourseID;
     private String CourseName;
     private Double TotalGrade;
+    private Integer Credits;
 
-    public RegisteredCourse(String CourseID, String CourseName) {
+    public RegisteredCourse(String CourseID, String CourseName, Integer Credits) {
       this.CourseID = CourseID;
       this.CourseName = CourseName;
       this.TotalGrade = 0.0;
+      this.Credits = Credits;
     }
 
-    public RegisteredCourse(String CourseID, String CourseName, Double CourseGrade) {
+    public RegisteredCourse(String CourseID, String CourseName, Integer Credits, Double CourseGrade) {
       this.CourseID = CourseID;
       this.CourseName = CourseName;
       this.TotalGrade = CourseGrade;
+      this.Credits = Credits;
     }
 
     public String getCourseID() {
@@ -130,6 +133,10 @@ public class Student {
     public void setCourseName(String newName) {
       this.CourseName = newName;
     }
+    
+    public Integer getCourseCredits() {
+    	return Credits;
+    }
 
     // Total Grade Utils
     public Double getTotalGrade() {
@@ -138,6 +145,10 @@ public class Student {
 
     public void setTotalGrade(Double newGrade) {
       this.TotalGrade = newGrade;
+    }
+    
+    public Double calculateGradePoints() {
+    	return Credits * TotalGrade;
     }
     
     public String[] asArray() {
@@ -249,12 +260,12 @@ public class Student {
 	  return null;
   }
 
-  public void addRegisteredCourse(String CourseID, String CourseName) {
-    this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName));
+  public void addRegisteredCourse(String CourseID, String CourseName, Integer Credits) {
+    this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName, Credits));
   }
 
-  public void addRegisteredCourse(String CourseID, String CourseName, Double CourseGrade) {
-    this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName, CourseGrade));
+  public void addRegisteredCourse(String CourseID, String CourseName, Integer Credits, Double CourseGrade) {
+    this.RegisteredCourses.add(new RegisteredCourse(CourseID, CourseName, Credits, CourseGrade));
   }
 
   public void removeRegisteredCourse(String CourseID) {
@@ -324,6 +335,31 @@ public class Student {
         return true;
     }
     return false;
+  }
+  
+  public double calculateAverageGrade() {
+	  if (RegisteredCourses.isEmpty())
+		  return 0.00;
+	  
+	  Double sum = 0.0;
+	  for (RegisteredCourse rc : RegisteredCourses) {
+		  sum += rc.getTotalGrade();
+	  }
+	  return sum / RegisteredCourses.size();
+  }
+  
+  public Double calculateGPA() {
+	  if (RegisteredCourses.isEmpty())
+		  return 0.00;
+	  
+	  Double totalScore = 0.0;
+	  Integer totalCredits = 0;
+	  for (RegisteredCourse rc : RegisteredCourses) {
+		  totalScore += rc.calculateGradePoints();
+		  totalCredits += rc.getCourseCredits();
+	  }
+	  
+	  return (double) ((totalScore / totalCredits)/100)*4;
   }
 
   public Object[] asArray() {

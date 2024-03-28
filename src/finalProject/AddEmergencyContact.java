@@ -144,11 +144,11 @@ public class AddEmergencyContact extends JFrame {
 	}
 	
 	private void addCourse() {
-		String idString = Integer.toOctalString(random.nextInt());
-		String nameString = contactName.getText();
-		String cellString = contactCell.getText();
-		String homeString = contactHome.getText();
-		String emailString = contactEmail.getText();
+		String idString = Integer.toHexString(random.nextInt());
+		String nameString = contactName.getText().strip();
+		String cellString = contactCell.getText().strip();
+		String homeString = contactHome.getText().strip();
+		String emailString = contactEmail.getText().strip();
 		
 		if (idString.isBlank() || nameString.isBlank()) {
 			status.setText("All of the required fields must be filled out.");

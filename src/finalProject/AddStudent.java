@@ -183,14 +183,14 @@ public class AddStudent extends JFrame {
 	
 	private void addStudent() {
 		String studentID = String.format("%9s", Integer.toString(random.nextInt(1, 1000000000))).replace(" ", "0");
-		String email = inputEmail.getText();
-		String firstName = inputFirstName.getText();
-		String lastName = inputLastName.getText();
-		String prefFirstName = inputPrefFirst.getText();
-		String prefLastName = inputPrefLast.getText();
-		String gender = genderSelect.getSelectedItem().toString();
-		String pronouns = pronounsSelect.getSelectedItem().toString();
-		String dob = parseDateToString();
+		String email = inputEmail.getText().strip();
+		String firstName = inputFirstName.getText().strip();
+		String lastName = inputLastName.getText().strip();
+		String prefFirstName = inputPrefFirst.getText().strip();
+		String prefLastName = inputPrefLast.getText().strip();
+		String gender = genderSelect.getSelectedItem().toString().strip();
+		String pronouns = pronounsSelect.getSelectedItem().toString().strip();
+		String dob = parseDateToString().strip();
 		
 		if (email.isBlank() || firstName.isBlank() || lastName.isBlank() || gender.isBlank()) {
 			status.setText("All of the required fields must be filled out.!");
