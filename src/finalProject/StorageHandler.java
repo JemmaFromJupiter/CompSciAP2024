@@ -3,7 +3,6 @@ package finalProject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -53,7 +52,7 @@ public class StorageHandler {
 		  preparedStatement.setString(2, rc.getCourseID());
 		  preparedStatement.setString(3, rc.getCourseName());
 		  preparedStatement.setInt(4, rc.getCourseCredits());
-		  preparedStatement.setDouble(5, 0.0);
+		  preparedStatement.setDouble(5, rc.getTotalGrade());
 		  preparedStatement.execute();
 	  }
   }
@@ -101,7 +100,19 @@ public class StorageHandler {
   }
   
   public void updateEmergencyContactInfo(String studentID, Student.EmergencyContact ec) throws SQLException {
+	  String sql = "UPDATE emergency_contacts " +
+			  "SET CONTACT_NAME=?, CONTACT_HOME=?, CONTACT_CELL=?, CONTACT_EMAIL=?" +
+			  "WHERE STUDENT_ID=? AND CONTACT_ID=?;";
 	  
+	  try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+		  preparedStatement.setString(1, ec.getContactName());
+		  preparedStatement.setString(2, ec.getContactHome());
+		  preparedStatement.setString(3, ec.getContactCell());
+		  preparedStatement.setString(4, ec.getContactEmail());
+		  preparedStatement.setString(5, studentID);
+		  preparedStatement.setString(6, ec.getContactID());
+		  preparedStatement.executeUpdate();
+	  }
   }
   
   public void deleteFromDatabase(String ID) throws SQLException {

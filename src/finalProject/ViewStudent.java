@@ -2,7 +2,6 @@ package finalProject;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Comparator;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -136,7 +135,7 @@ public class ViewStudent extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[189px][247px][49px][10px][1px][9px][189px][247px][49px]", "[25px][253px][2px][25px][253px]"));
+		contentPane.setLayout(new MigLayout("", "[189px][247px][49px][10px][1px][9px][189px][247px][49px,grow]", "[25px][253px][2px][25px][253px,grow]"));
 		
 		JLabel lblStudentId = new JLabel("Student ID:");
 		lblStudentId.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -277,7 +276,7 @@ public class ViewStudent extends JFrame {
 		
 		JLabel lblRegisteredCourses = new JLabel("Registered Courses");
 		lblRegisteredCourses.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblRegisteredCourses, "cell 0 3,alignx left,aligny top");
+		contentPane.add(lblRegisteredCourses, "cell 0 3,alignx left,aligny center");
 		
 		JLabel lblStudentInformation = new JLabel("Student Information");
 		lblStudentInformation.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -291,6 +290,14 @@ public class ViewStudent extends JFrame {
 		contentPane.add(ecPane, "cell 5 4 3 1,push ,grow");
 		
 		emergencyContactsTable = new JTable();
+		emergencyContactsTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2 && emergencyContactsTable.getSelectedRow() >= 0) {
+					new EditEmergencyContactAction().actionPerformed(null);
+				}
+			}
+		});
 		emergencyContactsTable.setFillsViewportHeight(true);
 		emergencyContactsTable.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		emergencyContactsTable.getTableHeader().setReorderingAllowed(false);
@@ -374,6 +381,14 @@ public class ViewStudent extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			AddEmergencyContact addEmergencyContactWindow = new AddEmergencyContact(student, shdl);
 			addEmergencyContactWindow.setVisible(true);
+		}
+	}
+	
+	private class EditEmergencyContactAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			int row = emergencyContactsTable.getSelectedRow();
+			EditEmergencyContact editECWindow = new EditEmergencyContact(student.getEmergencyContactByID((String) emergencyContactsTable.getValueAt(row, 0)), student, shdl);
+			editECWindow.setVisible(true);
 		}
 	}
 	

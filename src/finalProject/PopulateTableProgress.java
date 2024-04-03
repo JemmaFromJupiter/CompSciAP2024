@@ -1,8 +1,12 @@
+/**
+ * This file does not matter in the scope of the final goal of the project.
+ * Mostly just for testing and nice display for testing.
+ */
+
 package finalProject;
 
 import java.util.*;
 
-import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,7 +18,6 @@ import java.awt.Font;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
-import javax.swing.table.DefaultTableModel;
 
 public class PopulateTableProgress extends JFrame {
 	
@@ -41,7 +44,6 @@ public class PopulateTableProgress extends JFrame {
 	private static Integer numStudents;
 	private static StorageHandler shdl;
 	private static RuntimeDatabase rdb;
-	private static DefaultTableModel dtm;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -54,18 +56,6 @@ public class PopulateTableProgress extends JFrame {
 		numStudents = Students;
 		shdl = hdl;
 		rdb = db;
-		
-		run();
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public PopulateTableProgress(Integer Students, StorageHandler hdl, RuntimeDatabase db, DefaultTableModel tm) {
-		numStudents = Students;
-		shdl = hdl;
-		rdb = db;
-		dtm = tm;
 		
 		run();
 	}
@@ -103,17 +93,11 @@ public class PopulateTableProgress extends JFrame {
 		progWorker.execute();
 	}
 	
-	public static void showDialog(Integer numStudents, StorageHandler shdl, RuntimeDatabase rdb, DefaultTableModel dtm) {
-		PopulateTableProgress ptp = new PopulateTableProgress(numStudents, shdl, rdb, dtm);
-		ptp.setVisible(true);
-		progWorker.execute();
-	}
-	
 	private static class ProgressWorker extends SwingWorker<Void, Integer> {
 		private static JProgressBar progress;
 		
-		public ProgressWorker(JProgressBar progress) {
-			this.progress = progress;
+		public ProgressWorker(JProgressBar p) {
+			progress = p;
 		}
 		
 		@Override
@@ -136,16 +120,15 @@ public class PopulateTableProgress extends JFrame {
 					Student s = students.get(i);
 					rdb.append(s);
 					shdl.addStudentToDatabase(s);
-					dtm.addRow(s.asArray());
 					for (int j = 0; j < random.nextInt(4, 20); j++) {
-						Student.RegisteredCourse rc = new Student.RegisteredCourse("TSTCRS", "Test Course", random.nextInt(1, 5), random.nextDouble(50.0, 100.0));
+						Student.RegisteredCourse rc = new Student.RegisteredCourse("TSTCRS" + (random.nextInt(0, (int) Math.pow(randomNameLimit, 2))), "Test Course", random.nextInt(1, 5), random.nextDouble(50.0, 100.0));
 						s.addRegisteredCourse(rc.getCourseID(), rc.getCourseName(), rc.getCourseCredits(), rc.getTotalGrade());
 						shdl.addRegisteredCourseToDatabase(s.getID(), rc);
 						status.setText(String.format("Registered Course %s For %s...", rc.getCourseName(), s.getLegalName()));
 					}
 					
 					for (int j = 0; j < random.nextInt(2, 6); j++) {
-						Student.EmergencyContact ec = new Student.EmergencyContact("TSTCNT", "Test Contact", "", "", "");
+						Student.EmergencyContact ec = new Student.EmergencyContact(Integer.toHexString(random.nextInt()), "Test Contact", "", "", "");
 						s.addEmergencyContact(ec.getContactID(), ec.getContactName(), ec.getContactHome(), ec.getContactCell(), ec.getContactEmail());
 						shdl.addEmergencyContactToDatabase(s.getID(), ec);
 						status.setText(String.format("Registered Emergency Contact %s For %s...", ec.getContactName(), s.getLegalName()));

@@ -87,6 +87,13 @@ public class Student {
       this.ContactEmail = newEmail;
     }
     
+    public void setAllEditable(String contactName, String contactCell, String contactHome, String contactEmail) {
+    	setContactName(contactName);
+    	setContactCell(contactCell);
+    	setContactHome(contactHome);
+    	setContactEmail(contactEmail);
+    }
+    
     public String[] asArray() {
     	return new String[] {this.getContactID(), this.getContactName(), this.getContactCell(), this.getContactHome(), this.getContactEmail()};
     }

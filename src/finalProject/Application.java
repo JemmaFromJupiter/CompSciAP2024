@@ -36,6 +36,8 @@ public class Application extends JFrame {
 	private JPanel contentPane;
 	private JTable studentTable;
 	private DefaultTableModel studentTableModel;
+	private JMenuItem mntmTestingMode;
+	private JMenu mnTesting;
 	
 	private void setup() {
 		try {
@@ -81,12 +83,17 @@ public class Application extends JFrame {
 		mntmRefresh.addActionListener(new RefreshTableAction());
 		mnActions.add(mntmRefresh);
 		
+		mntmTestingMode = new JMenuItem("Enter Testing Mode");
+		mntmTestingMode.addActionListener(new EnableTestingAction());
+		mnActions.add(mntmTestingMode);
+		
 		JMenuItem mntmExit = new JMenuItem(String.format("Exit%65s", "CTRL+Q"));
 		mntmExit.addActionListener(new QuitAction());
 		mnActions.add(mntmExit);
 		
-		JMenu mnTesting = new JMenu("Testing");
+		mnTesting = new JMenu("Testing");
 		menuBar.add(mnTesting);
+		mnTesting.setVisible(false);
 		
 		JMenuItem mntmDmpDB = new JMenuItem("Dump Test Students Into Database");
 		mntmDmpDB.addActionListener(new TestDumpStudentsAction());
@@ -231,13 +238,42 @@ public class Application extends JFrame {
 				return;
 			}
 			
-			PopulateTableProgress.showDialog(numStudents, shdl, rdb, studentTableModel);
+			PopulateTableProgress.showDialog(numStudents, shdl, rdb);
+		}
+	}
+	
+	private class EnableTestingAction extends AbstractAction {
+		public void actionPerformed(ActionEvent e) {
+			JPasswordField pf = new JPasswordField();
+			int option = JOptionPane.showConfirmDialog(null, pf, "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			
+			if (option != JOptionPane.OK_OPTION)
+				return;
+			
+			String passwordInput = new String(pf.getPassword());
+			
+			try {
+				shdl.queryDatabase(String.format("SELECT * FROM root WHERE password_hash = (MD5(\"%s\"));", passwordInput));
+				
+				if (shdl.getResultSet().next()) {
+					mnTesting.setVisible(true);
+					mntmTestingMode.setEnabled(false);
+					return;
+				} else {
+					JOptionPane.showMessageDialog(null, "Incorrect Information Given.");
+				}
+			} catch (Exception se) {
+				JOptionPane.showMessageDialog(null, "An Error Occurred.");
+				se.printStackTrace();
+				return;
+			}
+			
 		}
 	}
 	
 	private class TestDeleteAllStudentsAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
-			DeleteAllStudentsProgress.showDialog(shdl, rdb, studentTableModel);
+			DeleteAllStudentsProgress.showDialog(shdl, rdb);
 		}
 	}
 	

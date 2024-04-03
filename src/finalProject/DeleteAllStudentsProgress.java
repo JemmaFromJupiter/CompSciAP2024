@@ -1,17 +1,18 @@
+/**
+ * This file does not matter in the scope of the final goal of the project.
+ * just for testing and nice display for testing.
+ */
+
 package finalProject;
 
-import java.awt.EventQueue;
 import java.util.*;
 
-import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 
@@ -22,7 +23,6 @@ public class DeleteAllStudentsProgress extends JFrame {
 	
 	private static StorageHandler shdl;
 	private static RuntimeDatabase rdb;
-	private static DefaultTableModel dtm;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -37,14 +37,6 @@ public class DeleteAllStudentsProgress extends JFrame {
 	public DeleteAllStudentsProgress(StorageHandler shdl_, RuntimeDatabase rdb_) {
 		shdl = shdl_;
 		rdb = rdb_;
-		
-		run();
-	}
-	
-	public DeleteAllStudentsProgress(StorageHandler shdl_, RuntimeDatabase rdb_, DefaultTableModel tm) {
-		shdl = shdl_;
-		rdb = rdb_;
-		dtm = tm;
 		
 		run();
 	}
@@ -82,27 +74,20 @@ public class DeleteAllStudentsProgress extends JFrame {
 		progWorker.execute();
 	}
 	
-	public static void showDialog(StorageHandler shdl, RuntimeDatabase rdb, DefaultTableModel dtm) {
-		DeleteAllStudentsProgress ptp = new DeleteAllStudentsProgress(shdl, rdb, dtm);
-		ptp.setVisible(true);
-		progWorker.execute();
-	}
-	
 	private static class ProgressWorker extends SwingWorker<Void, Integer> {
 		private static JProgressBar progress;
 		private static int i = rdb.size();
 		
-		public ProgressWorker(JProgressBar progress) {
-			this.progress = progress;
+		public ProgressWorker(JProgressBar progress_) {
+			progress = progress_;
 		}
 		
 		@Override
 		protected Void doInBackground() throws Exception {
-			progressBar.setMaximum(rdb.size());
+			progressBar.setMaximum(i);
 			
 			while (!rdb.isEmpty()) {
 				try {
-					dtm.removeRow(rdb.size() - 1);
 					Student s = rdb.pop();
 					shdl.deleteFromDatabase(s.getID());
 					status.setText(String.format("Successfully Deleted Student %s...", s.getLegalName()));

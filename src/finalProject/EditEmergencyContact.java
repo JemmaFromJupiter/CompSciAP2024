@@ -15,19 +15,16 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-import java.util.Random;
-
-public class AddEmergencyContact extends JFrame {
+public class EditEmergencyContact extends JFrame {
 	
-	private static Random random = new Random();
-
+	private Student.EmergencyContact contact;
 	private Student student;
-	private StorageHandler shdl;
+	private StorageHandler storage;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField contactName;
 	private JLabel status;
+	private JTextField contactName;
 	private JTextField contactHome;
 	private JTextField contactCell;
 	private JTextField contactEmail;
@@ -35,10 +32,10 @@ public class AddEmergencyContact extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AddEmergencyContact(Student s, StorageHandler shdl) {
-		this.student = s;
-		this.shdl = shdl;
-		
+	public EditEmergencyContact(Student.EmergencyContact ec, Student s, StorageHandler shdl) {
+		contact = ec;
+		student = s;
+		storage = shdl;
 		setTitle("Add Emergency Contact");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512, 394);
@@ -72,7 +69,7 @@ public class AddEmergencyContact extends JFrame {
 		lblContactName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblContactName, "flowx,cell 0 0");
 		
-		contactName = new JTextField();
+		contactName = new JTextField(contact.getContactName());
 		contactName.setColumns(10);
 		panel.add(contactName, "cell 0 1 2 1,growx");
 		
@@ -84,11 +81,11 @@ public class AddEmergencyContact extends JFrame {
 		lblContactCell.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblContactCell, "flowx,cell 1 3");
 		
-		contactHome = new JTextField();
+		contactHome = new JTextField(contact.getContactHome());
 		panel.add(contactHome, "cell 0 4,growx");
 		contactHome.setColumns(10);
 		
-		contactCell = new JTextField();
+		contactCell = new JTextField(contact.getContactCell());
 		contactCell.setColumns(10);
 		panel.add(contactCell, "cell 1 4,growx");
 		
@@ -116,7 +113,7 @@ public class AddEmergencyContact extends JFrame {
 		lblOpt_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblOpt_1_1, "cell 0 6");
 		
-		contactEmail = new JTextField();
+		contactEmail = new JTextField(contact.getContactEmail());
 		contactEmail.setColumns(10);
 		panel.add(contactEmail, "cell 0 7 2 1,growx");
 		
@@ -127,7 +124,7 @@ public class AddEmergencyContact extends JFrame {
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				addCourse();
+				editContact();
 			}
 		});
 		buttonPanel.add(btnConfirm);
@@ -141,14 +138,13 @@ public class AddEmergencyContact extends JFrame {
 		buttonPanel.add(btnCancel);
 	}
 	
-	private void addCourse() {
-		String idString = Integer.toHexString(random.nextInt());
+	private void editContact() {
 		String nameString = contactName.getText().strip();
 		String cellString = contactCell.getText().strip();
 		String homeString = contactHome.getText().strip();
 		String emailString = contactEmail.getText().strip();
 		
-		if (idString.isBlank() || nameString.isBlank()) {
+		if (nameString.isBlank()) {
 			status.setText("All of the required fields must be filled out.");
 			return;
 		}
@@ -158,9 +154,9 @@ public class AddEmergencyContact extends JFrame {
 			return;
 		}
 		
-		try {
-			student.addEmergencyContact(idString, nameString, homeString, cellString, emailString);
-			shdl.addEmergencyContactToDatabase(student.getID(), student.getEmergencyContactByID(idString));
+		try {;
+			contact.setAllEditable(nameString, cellString, homeString, emailString);
+			storage.updateEmergencyContactInfo(student.getID(), contact);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

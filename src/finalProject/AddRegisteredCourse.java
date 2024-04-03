@@ -12,7 +12,6 @@ public class AddRegisteredCourse extends JFrame {
 	
 	private Student student;
 	private StorageHandler shdl;
-	private RuntimeDatabase rdb;
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
